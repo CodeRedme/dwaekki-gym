@@ -610,6 +610,47 @@ const LOW_ENERGY_MESSAGE = {
   hi: "Aaj bade workout ki zaroorat nahi. Bas thoda gentle move karte hain. 🐷💗",
 };
 
+// ===================== TIMED WORKOUT SESSIONS =====================
+const DEFAULT_WORK_SECONDS = 40;
+const DEFAULT_REST_SECONDS = 20;
+const REST_MESSAGES = [
+  { en: "Rest, STAY. Take a little breather. You don't have to rush.", hi: "Rest karo, STAY. Thoda saans lo. Jaldi karne ki zaroorat nahi." },
+  { en: "Nice work. A short pause is part of the workout too.", hi: "Bahut badhiya. Thoda rukna bhi workout ka hissa hai." },
+  { en: "Shake it out. Dwaekki's got you.", hi: "Thoda shake out karo. Dwaekki tumhare saath hai." },
+];
+
+// ===================== DWAEKKI'S LITTLE DAY (gentle missions + food box) =====================
+// Not every mission has to be exercise — wellbeing over workout count.
+const GENTLE_MISSIONS = [
+  { id: "workout", en: "Complete a workout", hi: "Ek workout complete karo" },
+  { id: "movebreak", en: "Take a movement break", hi: "Ek movement break lo" },
+  { id: "water", en: "Drink some water", hi: "Thoda paani piyo" },
+  { id: "stretch", en: "Do a quick stretch", hi: "Thoda stretch karo" },
+  { id: "screenbreak", en: "Take a screen break", hi: "Screen se thoda break lo" },
+  { id: "rest", en: "Get a little rest", hi: "Thoda rest karo" },
+  { id: "meal", en: "Eat a balanced meal", hi: "Ek balanced meal khao" },
+];
+
+// Random food reward pool — pure collectible fun, not nutrition scoring.
+const FOOD_STICKERS = [
+  { emoji: "🥕", en: "Carrot", hi: "Carrot" },
+  { emoji: "🍎", en: "Apple", hi: "Seb" },
+  { emoji: "🍓", en: "Strawberry", hi: "Strawberry" },
+  { emoji: "🥚", en: "Egg", hi: "Anda" },
+  { emoji: "🍚", en: "Rice bowl", hi: "Rice bowl" },
+  { emoji: "🥬", en: "Greens", hi: "Greens" },
+  { emoji: "🍌", en: "Banana", hi: "Kela" },
+  { emoji: "🍊", en: "Orange", hi: "Santra" },
+  { emoji: "🥦", en: "Broccoli", hi: "Broccoli" },
+  { emoji: "🍙", en: "Onigiri", hi: "Onigiri" },
+  { emoji: "🌮", en: "Taco", hi: "Taco" },
+  { emoji: "🍝", en: "Pasta", hi: "Pasta" },
+  { emoji: "🫘", en: "Beans", hi: "Beans" },
+  { emoji: "🍞", en: "Bread", hi: "Bread" },
+];
+
+const DWAEKKI_MOODS = { normal: "🐷", happy: "🐷💗", eating: "🐷😋" };
+
 // ===================== DWAEKKI DASH (mini game) =====================
 // A tiny offline endless-runner. Collect good things, dodge the one unsafe
 // obstacle type. No calories, no weight, no pressure — just a little fun.

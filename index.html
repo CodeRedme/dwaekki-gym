@@ -60,22 +60,45 @@
         <button class="quick-tile" data-nav="food" data-en="🍚 Build a meal" data-hi="🍚 Meal banao">🍚 Build a meal</button>
         <button class="quick-tile" data-nav="week" data-en="📅 My Week" data-hi="📅 Meri Week">📅 My Week</button>
         <button class="quick-tile" data-nav="game" data-en="🎮 Dwaekki Dash" data-hi="🎮 Dwaekki Dash">🎮 Dwaekki Dash</button>
+        <button class="quick-tile" data-nav="music" data-en="🎧 Dwaekki Music" data-hi="🎧 Dwaekki Music">🎧 Dwaekki Music</button>
       </div>
 
       <div class="mission-card">
-        <h3 data-en="🐷 Dwaekki's Daily Mission" data-hi="🐷 Dwaekki ka Daily Mission">🐷 Dwaekki's Daily Mission</h3>
-        <p id="missionText"></p>
-        <button id="missionBtn" class="btn-secondary" data-en="Done for today ✓" data-hi="Aaj ke liye done ✓">Done for today ✓</button>
-        <p class="points-note"><span id="pointsCount">0</span> <span data-en="Dwaekki Points earned" data-hi="Dwaekki Points kamaaye">Dwaekki Points earned</span></p>
+        <h3 data-en="🐷 Dwaekki's Little Day" data-hi="🐷 Dwaekki Ka Little Day">🐷 Dwaekki's Little Day</h3>
+        <p class="soft-note" data-en="Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki." data-hi="Chhote wellbeing missions — sirf exercise nahi. Har ek se Dwaekki ke liye ek random food emoji milta hai.">Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki.</p>
+        <div id="missionChecklist" class="mission-checklist"></div>
+        <p class="points-note"><span id="missionProgress">0/5</span> <span data-en="completed today" data-hi="aaj complete hue">completed today</span></p>
+      </div>
+
+      <div class="foodbox-card">
+        <div class="foodbox-header">
+          <h3 data-en="🍱 Dwaekki's Food Box" data-hi="🍱 Dwaekki Ka Food Box">🍱 Dwaekki's Food Box</h3>
+          <span id="dwaekkiMoodEmoji" class="dwaekki-mood">🐷</span>
+        </div>
+        <div id="foodBoxGrid" class="foodbox-grid"></div>
+        <button id="feedDwaekkiBtn" class="btn-secondary" data-en="🐰 Feed Dwaekki" data-hi="🐰 Dwaekki Ko Khilao">🐰 Feed Dwaekki</button>
+        <p id="feedMsg" class="soft-note"></p>
       </div>
 
       <div class="hydration-card">
         <h3 data-en="💧 Hydration Reminders" data-hi="💧 Paani peene ke reminders">💧 Hydration Reminders</h3>
-        <p class="soft-note" data-en="Gentle nudges while this tab is open — morning, midday, around activity, evening." data-hi="Jab yeh tab khula ho tab halke reminders — subah, dopahar, activity ke aas-paas, shaam.">Gentle nudges while this tab is open — morning, midday, around activity, evening.</p>
+        <p class="soft-note" data-en="Gentle nudges, no strict targets — everyone's needs vary." data-hi="Halke reminders, koi strict target nahi — sabki zaroorat alag hoti hai.">Gentle nudges, no strict targets — everyone's needs vary.</p>
         <label class="switch-row">
           <span data-en="Turn on reminders" data-hi="Reminders on karo">Turn on reminders</span>
           <input type="checkbox" id="hydrationToggle" />
         </label>
+        <div id="hydrationSettings" class="hydration-settings hidden">
+          <label class="control-block" style="margin-top:10px;">
+            <span data-en="Remind me every" data-hi="Har">Remind me every</span>
+            <select id="hydrationInterval">
+              <option value="30">30 min</option>
+              <option value="45" selected>45 min</option>
+              <option value="60">60 min</option>
+              <option value="90">90 min</option>
+            </select>
+          </label>
+        </div>
+        <p class="reliability-note" data-en="🟢 App open: reliable. 🟡 App backgrounded: works on most phones/browsers. 🔵 App fully closed: not guaranteed — that needs a background push server we don't have (yet!)." data-hi="🟢 App khula: reliable. 🟡 App background mein: zyada phones/browsers par kaam karta hai. 🔵 App poori tarah band: guarantee nahi — uske liye background push server chahiye (abhi nahi hai!).">🟢 App open: reliable. 🟡 App backgrounded: works on most phones/browsers. 🔵 App fully closed: not guaranteed — that needs a background push server we don't have (yet!).</p>
       </div>
     </section>
 
@@ -210,6 +233,64 @@
       <div class="credit-box">
         <p data-en="Dwaekki Gym created by Tulika Soni ♡ × STAY Project" data-hi="Dwaekki Gym banaya gaya Tulika Soni ♡ × STAY Project dwara">Dwaekki Gym created by Tulika Soni ♡ × STAY Project</p>
         <p class="tiny-note">Copyright © — Original fan-made project. Not affiliated with JYP Entertainment.</p>
+      </div>
+    </section>
+
+    <!-- ---------- GUIDED WORKOUT TIMER ---------- -->
+    <section id="view-timer" class="view">
+      <div id="timerPreScreen">
+        <h2 data-en="🐷 Your Workout" data-hi="🐷 Tumhara Workout">🐷 Your Workout</h2>
+        <div class="timer-pre-card">
+          <p id="timerPreSummary" class="soft-note" style="font-size:0.95rem;"></p>
+          <div class="switch-row"><span data-en="🔊 Sound" data-hi="🔊 Sound">🔊 Sound</span><input type="checkbox" id="timerSoundToggle" checked /></div>
+          <div class="switch-row"><span data-en="📳 Vibration" data-hi="📳 Vibration">📳 Vibration</span><input type="checkbox" id="timerVibrationToggle" checked /></div>
+          <button id="timerStartBtn" class="btn-primary" style="margin-top:14px;" data-en="▶ Start Workout" data-hi="▶ Workout Shuru Karo">▶ Start Workout</button>
+        </div>
+      </div>
+
+      <div id="timerActiveScreen" class="hidden">
+        <div class="timer-active-card" id="timerActiveCard">
+          <p class="timer-step-label" id="timerStepLabel"></p>
+          <h2 id="timerExerciseName"></h2>
+          <div class="timer-countdown" id="timerCountdown">00:00</div>
+          <div class="timer-progress-bar"><div id="timerProgressFill" class="timer-progress-fill"></div></div>
+          <p id="timerNextLabel" class="soft-note"></p>
+          <p id="timerRestMsg" class="rest-msg hidden"></p>
+          <div class="timer-controls">
+            <button id="timerPauseBtn" class="btn-secondary">⏸</button>
+            <button id="timerSkipBtn" class="btn-secondary">⏭</button>
+            <button id="timerRestartBtn" class="btn-secondary">🔄</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="timerDoneScreen" class="hidden">
+        <div class="timer-done-card">
+          <h2 data-en="🎉 You Did It!" data-hi="🎉 Tumne Kar Diya!">🎉 You Did It!</h2>
+          <p class="hero-quote" data-en="Dwaekki is proud of you. Small movement still counts. ❤️" data-hi="Dwaekki ko tum par garv hai. Chhoti movement bhi maayne rakhti hai. ❤️">Dwaekki is proud of you. Small movement still counts. ❤️</p>
+          <button id="timerFeedBtn" class="btn-primary" data-en="🐰 Feed Dwaekki" data-hi="🐰 Dwaekki Ko Khilao">🐰 Feed Dwaekki</button>
+          <button id="timerBackHomeBtn" class="btn-secondary" style="margin-top:10px;" data-en="↩ Back Home" data-hi="↩ Ghar Wapas">↩ Back Home</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- DWAEKKI MUSIC ---------- -->
+    <section id="view-music" class="view">
+      <h2 data-en="🎧 Dwaekki Music" data-hi="🎧 Dwaekki Music">🎧 Dwaekki Music</h2>
+      <p class="hero-quote" style="margin-bottom:16px;" data-en="Dwaekki doesn't choose your music. You do. 🐷❤️" data-hi="Dwaekki tumhara music nahi chunta. Tum chunte ho. 🐷❤️">Dwaekki doesn't choose your music. You do. 🐷❤️</p>
+
+      <div class="music-links">
+        <a href="https://open.spotify.com" target="_blank" rel="noopener" class="music-link-btn">🎵 Spotify</a>
+        <a href="https://music.youtube.com" target="_blank" rel="noopener" class="music-link-btn">▶️ YouTube Music</a>
+        <a href="https://music.apple.com" target="_blank" rel="noopener" class="music-link-btn">🍎 Apple Music</a>
+      </div>
+      <p class="soft-note" data-en="These open in a new tab — keep it playing there while your workout timer runs here." data-hi="Yeh naye tab mein khulte hain — waha music chalte rehne do jab yaha workout timer chale.">These open in a new tab — keep it playing there while your workout timer runs here.</p>
+
+      <div class="builder-card">
+        <h3 data-en="🎵 Or play a song from your device" data-hi="🎵 Ya apne device se ek gaana chalao">🎵 Or play a song from your device</h3>
+        <p class="soft-note" data-en="Nothing is uploaded — it plays straight from your file, privately." data-hi="Kuch upload nahi hota — seedha tumhari file se, privately play hota hai.">Nothing is uploaded — it plays straight from your file, privately.</p>
+        <input type="file" id="localAudioInput" accept="audio/*" />
+        <audio id="localAudioPlayer" controls class="hidden" style="width:100%;margin-top:10px;"></audio>
       </div>
     </section>
 

@@ -280,6 +280,62 @@ h3 { font-size: 1rem; color: var(--pink-hot); margin: 0 0 8px; }
 }
 .switch-row input[type="checkbox"] { width: 40px; height: 22px; accent-color: var(--pink-hot); }
 
+.hydration-settings { margin-top: 4px; }
+.hydration-settings select {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--line);
+  background: #fff;
+  font-size: 0.85rem;
+  margin-left: 8px;
+}
+.reliability-note {
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  margin-top: 12px;
+  line-height: 1.5;
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+}
+
+.mission-checklist { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.mission-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+}
+.mission-item input { width: 18px; height: 18px; accent-color: var(--pink-hot); flex-shrink: 0; }
+.mission-item.done { background: #fdeef4; border-color: var(--pink-mid); }
+.mission-item.done span { text-decoration: line-through; color: var(--ink-soft); }
+
+.foodbox-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.foodbox-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.dwaekki-mood { font-size: 1.6rem; transition: transform 0.3s; }
+.dwaekki-mood.bounce { animation: bounce 0.5s; }
+@keyframes bounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+.foodbox-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; min-height: 34px; }
+.foodbox-item {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.foodbox-empty { font-size: 0.78rem; color: var(--ink-soft); font-style: italic; }
+
 /* ===== Time chips ===== */
 .time-chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .time-chip {
@@ -522,6 +578,43 @@ h3 { font-size: 1rem; color: var(--pink-hot); margin: 0 0 8px; }
 }
 .tab-btn small { font-size: 0.62rem; font-weight: 700; }
 .tab-btn.active { color: var(--pink-hot); background: var(--pink-bg); }
+
+/* ===== Guided Workout Timer ===== */
+.timer-pre-card, .timer-active-card, .timer-done-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 22px;
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.timer-pre-card { text-align: left; }
+.timer-step-label { font-size: 0.78rem; font-weight: 700; color: var(--pink-hot); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.timer-active-card h2 { margin: 4px 0 14px; font-size: 1.4rem; }
+.timer-countdown { font-size: 3rem; font-weight: 800; color: var(--pink-hot); margin: 6px 0; font-variant-numeric: tabular-nums; }
+.timer-progress-bar { background: var(--pink-bg); border-radius: 999px; height: 10px; overflow: hidden; margin: 10px 0; }
+.timer-progress-fill { background: linear-gradient(90deg, var(--pink-deep), var(--pink-hot)); height: 100%; width: 0%; transition: width 0.2s linear; }
+.rest-msg { background: #fdeef4; border-radius: 12px; padding: 10px; font-size: 0.85rem; color: #8a4a68; margin-top: 10px; }
+.timer-controls { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+.timer-controls .btn-secondary { flex: 1; max-width: 90px; font-size: 1.1rem; padding: 10px; }
+.timer-done-card .btn-primary { max-width: 220px; margin: 14px auto 0; }
+.timer-done-card .btn-secondary { max-width: 220px; margin: 0 auto; display: block; }
+
+/* ===== Dwaekki Music ===== */
+.music-links { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+.music-link-btn {
+  display: block;
+  text-align: center;
+  background: #fff;
+  border: 2px solid var(--pink-mid);
+  border-radius: 14px;
+  padding: 14px;
+  font-weight: 700;
+  color: var(--pink-hot);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+#localAudioInput { width: 100%; font-size: 0.82rem; }
 
 /* ===== Dwaekki Dash (mini game) ===== */
 .game-wrap { text-align: center; }

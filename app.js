@@ -10,8 +10,10 @@ const LS = {
   missionDone: "dwaekki_mission_done",
   week: "dwaekki_week",
   hydration: "dwaekki_hydration_on",
+  hydrationInterval: "dwaekki_hydration_interval",
   equipment: "dwaekki_equipment",
   gameBest: "dwaekki_game_best",
+  foodBox: "dwaekki_food_box",
 };
 
 let state = {
@@ -74,11 +76,12 @@ function navigateTo(viewId) {
   const target = document.getElementById("view-" + viewId);
   if (target) target.classList.add("active");
   document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-  const tabMap = { home: "home", library: "library", time: "library", nothing: "library", equipment: "library", lowenergy: "home", game: "home", food: "food", ai: "ai", week: "home", about: "about" };
+  const tabMap = { home: "home", library: "library", time: "library", nothing: "library", equipment: "library", lowenergy: "home", game: "home", music: "home", timer: "home", food: "food", ai: "ai", week: "home", about: "about" };
   const tabBtn = document.querySelector(`.tab-btn[data-nav="${tabMap[viewId] || viewId}"]`);
   if (tabBtn) tabBtn.classList.add("active");
   if (viewId === "lowenergy") renderLowEnergy();
   if (viewId !== "game") stopGame();
+  if (viewId !== "timer") stopTimerSession();
   window.scrollTo(0, 0);
 }
 function initNav() {
@@ -97,46 +100,103 @@ function initLangToggle() {
   });
 }
 
-// ---------- Daily mission / points ----------
-function initMission() {
+// ---------- Dwaekki's Little Day: gentle mission checklist ----------
+function todaysMissionIds() {
   const doy = dayOfYear();
-  const savedDate = localStorage.getItem(LS.missionDate);
-  let missionIndex;
-  if (savedDate === String(doy)) {
-    missionIndex = parseInt(localStorage.getItem(LS.missionIndex) || "0", 10);
-  } else {
-    missionIndex = doy % DAILY_MISSIONS.length;
-    localStorage.setItem(LS.missionDate, String(doy));
-    localStorage.setItem(LS.missionIndex, String(missionIndex));
-    localStorage.setItem(LS.missionDone, "false");
-  }
-  const mission = DAILY_MISSIONS[missionIndex];
-  document.getElementById("missionText").textContent = t(mission.en, mission.hi);
+  // rotate which 5 of the 7 gentle missions show today, so it stays fresh
+  const order = GENTLE_MISSIONS.map((m) => m.id);
+  const rotated = order.slice(doy % order.length).concat(order.slice(0, doy % order.length));
+  return rotated.slice(0, 5);
+}
+function getMissionDoneMap() {
+  const key = todayKey();
+  const saved = JSON.parse(localStorage.getItem(LS.missionDone + "_map") || "{}");
+  if (saved.date !== key) return { date: key, done: {} };
+  return saved;
+}
+function initMission() {
+  renderMissionChecklist();
+}
+function renderMissionChecklist() {
+  const ids = todaysMissionIds();
+  const map = getMissionDoneMap();
+  const container = document.getElementById("missionChecklist");
+  container.innerHTML = ids.map((id) => {
+    const m = GENTLE_MISSIONS.find((x) => x.id === id);
+    const done = !!map.done[id];
+    return `<label class="mission-item ${done ? "done" : ""}">
+      <input type="checkbox" data-mission="${id}" ${done ? "checked" : ""} />
+      <span>${t(m.en, m.hi)}</span>
+    </label>`;
+  }).join("");
+  container.querySelectorAll("input[type=checkbox]").forEach((cb) => {
+    cb.addEventListener("change", () => onMissionToggle(cb.getAttribute("data-mission"), cb.checked));
+  });
+  updateMissionProgress(ids, map);
+}
+function updateMissionProgress(ids, map) {
+  const doneCount = ids.filter((id) => map.done[id]).length;
+  document.getElementById("missionProgress").textContent = `${doneCount}/${ids.length}`;
+}
+function onMissionToggle(id, checked) {
+  const map = getMissionDoneMap();
+  const wasAlreadyDone = !!map.done[id];
+  map.done[id] = checked;
+  localStorage.setItem(LS.missionDone + "_map", JSON.stringify(map));
 
-  const points = parseInt(localStorage.getItem(LS.points) || "0", 10);
-  document.getElementById("pointsCount").textContent = points;
-
-  const done = localStorage.getItem(LS.missionDone) === "true";
-  const btn = document.getElementById("missionBtn");
-  updateMissionBtn(btn, done);
-
-  btn.addEventListener("click", () => {
-    const currentlyDone = localStorage.getItem(LS.missionDone) === "true";
-    if (currentlyDone) return;
-    localStorage.setItem(LS.missionDone, "true");
+  if (checked && !wasAlreadyDone) {
     const newPoints = parseInt(localStorage.getItem(LS.points) || "0", 10) + 5;
     localStorage.setItem(LS.points, String(newPoints));
-    document.getElementById("pointsCount").textContent = newPoints;
-    updateMissionBtn(btn, true);
-  });
+    awardFoodSticker();
+  }
+  renderMissionChecklist();
 }
-function updateMissionBtn(btn, done) {
-  if (done) {
-    btn.textContent = t("Done for today ✓", "Aaj ke liye done ✓");
-    btn.classList.add("done");
-  } else {
-    btn.textContent = t("Done for today ✓", "Aaj ke liye done ✓");
-    btn.classList.remove("done");
+
+// ---------- Food Box + Feed Dwaekki ----------
+function getFoodBox() {
+  return JSON.parse(localStorage.getItem(LS.foodBox) || "{}");
+}
+function saveFoodBox(box) {
+  localStorage.setItem(LS.foodBox, JSON.stringify(box));
+}
+function awardFoodSticker() {
+  const pick = FOOD_STICKERS[Math.floor(Math.random() * FOOD_STICKERS.length)];
+  const box = getFoodBox();
+  box[pick.emoji] = (box[pick.emoji] || 0) + 1;
+  saveFoodBox(box);
+  renderFoodBox();
+  showToast(t(`🎁 You found a food sticker: ${pick.emoji}!`, `🎁 Tumhe ek food sticker mila: ${pick.emoji}!`));
+}
+function renderFoodBox() {
+  const box = getFoodBox();
+  const grid = document.getElementById("foodBoxGrid");
+  if (!grid) return;
+  const entries = Object.entries(box).filter(([, count]) => count > 0);
+  grid.innerHTML = entries.length
+    ? entries.map(([emoji, count]) => `<span class="foodbox-item">${emoji} ×${count}</span>`).join("")
+    : `<span class="foodbox-empty">${t("Empty for now — complete a mission to earn Dwaekki's first snack!", "Abhi khaali hai — ek mission complete karo aur Dwaekki ka pehla snack kamao!")}</span>`;
+}
+function feedDwaekki() {
+  const box = getFoodBox();
+  const available = Object.entries(box).filter(([, count]) => count > 0);
+  const msgEl = document.getElementById("feedMsg");
+  if (available.length === 0) {
+    msgEl.textContent = t("Dwaekki's food box is empty — complete a mission first!", "Dwaekki ka food box khaali hai — pehle ek mission complete karo!");
+    return;
+  }
+  const [emoji, count] = available[Math.floor(Math.random() * available.length)];
+  box[emoji] = count - 1;
+  saveFoodBox(box);
+  renderFoodBox();
+  msgEl.textContent = t(`🐷 Dwaekki ate the ${emoji}! 😋`, `🐷 Dwaekki ne ${emoji} kha liya! 😋`);
+  const moodEl = document.getElementById("dwaekkiMoodEmoji");
+  if (moodEl) {
+    moodEl.textContent = DWAEKKI_MOODS.eating;
+    moodEl.classList.add("bounce");
+    setTimeout(() => {
+      moodEl.textContent = DWAEKKI_MOODS.normal;
+      moodEl.classList.remove("bounce");
+    }, 1200);
   }
 }
 
@@ -156,29 +216,60 @@ function initHomeMissedNote() {
   }
 }
 
-// ---------- Hydration ----------
+// ---------- Hydration (real notifications when permitted, toast fallback) ----------
 let hydrationTimer = null;
 function initHydration() {
   const toggle = document.getElementById("hydrationToggle");
+  const intervalSelect = document.getElementById("hydrationInterval");
+  const settingsBox = document.getElementById("hydrationSettings");
+  const savedInterval = localStorage.getItem(LS.hydrationInterval) || "45";
+  intervalSelect.value = savedInterval;
+
   toggle.checked = localStorage.getItem(LS.hydration) === "true";
+  settingsBox.classList.toggle("hidden", !toggle.checked);
   if (toggle.checked) startHydration();
 
-  toggle.addEventListener("change", () => {
+  toggle.addEventListener("change", async () => {
     localStorage.setItem(LS.hydration, String(toggle.checked));
+    settingsBox.classList.toggle("hidden", !toggle.checked);
+    if (toggle.checked) {
+      if ("Notification" in window && Notification.permission === "default") {
+        await Notification.requestPermission();
+      }
+      startHydration();
+    } else {
+      stopHydration();
+    }
+  });
+  intervalSelect.addEventListener("change", () => {
+    localStorage.setItem(LS.hydrationInterval, intervalSelect.value);
     if (toggle.checked) startHydration();
-    else stopHydration();
   });
 }
 function startHydration() {
   stopHydration();
-  showToast(t("💧 Hydration reminders are on — Dwaekki will nudge you while this tab stays open.", "💧 Hydration reminders on hain — jab tak yeh tab khula hai, Dwaekki tumhe yaad dilata rahega."));
+  const mins = parseInt(localStorage.getItem(LS.hydrationInterval) || "45", 10);
+  notifyOrToast(t("💧 Hydration reminders are on — Dwaekki will nudge you.", "💧 Hydration reminders on hain — Dwaekki tumhe yaad dilata rahega."));
   hydrationTimer = setInterval(() => {
-    showToast(t("💧 Quick sip of water?", "💧 Thoda paani pi lo?"));
-  }, 45 * 60 * 1000); // every 45 min while tab open
+    notifyOrToast(t("💧 Dwaekki Hydration Check! Take a little water break, STAY.", "💧 Dwaekki Hydration Check! Thoda paani pi lo, STAY."));
+  }, mins * 60 * 1000);
 }
 function stopHydration() {
   if (hydrationTimer) clearInterval(hydrationTimer);
   hydrationTimer = null;
+}
+function notifyOrToast(msg) {
+  if ("Notification" in window && Notification.permission === "granted") {
+    if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.showNotification("Dwaekki Gym", { body: msg, icon: "icon-192.png" }).catch(() => showToast(msg));
+      }).catch(() => showToast(msg));
+    } else {
+      try { new Notification("Dwaekki Gym", { body: msg, icon: "icon-192.png" }); } catch (e) { showToast(msg); }
+    }
+  } else {
+    showToast(msg);
+  }
 }
 function showToast(msg) {
   const toast = document.getElementById("hydrationToast");
@@ -210,12 +301,14 @@ function renderTimeResult(mins) {
     budget -= ex.minutes;
     if (budget <= 0) break;
   }
+  state.lastTimeFinderPicks = picks;
   panel.innerHTML = `<p style="margin:0 0 10px;font-weight:700;color:var(--pink-hot)">${t("Dwaekki found a workout for you:", "Dwaekki ne tumhare liye workout dhoond liya:")}</p>` +
     picks.map((e) => `<div class="exercise-card" style="margin-bottom:10px;">
       <h4>${e.name}</h4>
       <div class="exercise-meta">${e.sets}</div>
       <p style="font-size:0.82rem;color:var(--ink-soft);margin:0;">${e.form}</p>
-    </div>`).join("");
+    </div>`).join("") +
+    `<button class="btn-primary" style="margin-top:10px;" onclick="startTimerSession(state.lastTimeFinderPicks)">${t("▶ Start Timed Workout", "▶ Timed Workout Shuru Karo")}</button>`;
 }
 function seededRandom() {
   return Math.random();
@@ -255,6 +348,7 @@ function exerciseCardHTML(e) {
   return `<div class="exercise-card">
     <h4>${e.name}</h4>
     <div class="exercise-meta">${e.sets}</div>
+    <button class="btn-secondary" style="margin:6px 0;" onclick="startSingleExerciseTimer('${e.id}')">${t("▶ Start Timer", "▶ Timer Shuru Karo")}</button>
     <details>
       <summary>${t("Form tips, safety & variations", "Form tips, safety aur variations")}</summary>
       <ul>
@@ -577,7 +671,185 @@ function initClearData() {
   });
 }
 
-// ---------- Dwaekki Dash (mini game) ----------
+// ---------- Guided Workout Timer (timestamp-based, drift-proof) ----------
+let timerSession = null; // { steps: [{type, exercise?, seconds, label}], index, endTime, remainingMs, paused, tickId }
+
+function buildSessionFromExercises(exercises) {
+  const steps = [];
+  exercises.forEach((ex, i) => {
+    steps.push({ type: "exercise", exercise: ex, seconds: DEFAULT_WORK_SECONDS });
+    if (i < exercises.length - 1) steps.push({ type: "rest", seconds: DEFAULT_REST_SECONDS });
+  });
+  return steps;
+}
+function startTimerSession(exercises) {
+  if (!exercises || exercises.length === 0) return;
+  timerSession = { steps: buildSessionFromExercises(exercises), index: 0, paused: false, endTime: 0, remainingMs: 0 };
+  const names = exercises.map((e) => e.name).join(", ");
+  document.getElementById("timerPreSummary").textContent = t(
+    `${exercises.length} exercises: ${names}`,
+    `${exercises.length} exercises: ${names}`
+  );
+  navigateTo("timer");
+  showTimerPreScreen();
+}
+window.startTimerSession = startTimerSession;
+
+function startSingleExerciseTimer(exerciseId) {
+  const ex = EXERCISES.find((e) => e.id === exerciseId);
+  if (!ex) return;
+  // a mini 3-round session: exercise, rest, exercise, rest, exercise
+  timerSession = {
+    steps: [
+      { type: "exercise", exercise: ex, seconds: DEFAULT_WORK_SECONDS },
+      { type: "rest", seconds: DEFAULT_REST_SECONDS },
+      { type: "exercise", exercise: ex, seconds: DEFAULT_WORK_SECONDS },
+      { type: "rest", seconds: DEFAULT_REST_SECONDS },
+      { type: "exercise", exercise: ex, seconds: DEFAULT_WORK_SECONDS },
+    ],
+    index: 0, paused: false, endTime: 0, remainingMs: 0,
+  };
+  document.getElementById("timerPreSummary").textContent = t(`3 rounds: ${ex.name}`, `3 rounds: ${ex.name}`);
+  navigateTo("timer");
+  showTimerPreScreen();
+}
+window.startSingleExerciseTimer = startSingleExerciseTimer;
+
+function showTimerPreScreen() {
+  document.getElementById("timerPreScreen").classList.remove("hidden");
+  document.getElementById("timerActiveScreen").classList.add("hidden");
+  document.getElementById("timerDoneScreen").classList.add("hidden");
+}
+function initTimerControls() {
+  document.getElementById("timerStartBtn").addEventListener("click", () => {
+    document.getElementById("timerPreScreen").classList.add("hidden");
+    document.getElementById("timerActiveScreen").classList.remove("hidden");
+    runTimerStep(0);
+  });
+  document.getElementById("timerPauseBtn").addEventListener("click", toggleTimerPause);
+  document.getElementById("timerSkipBtn").addEventListener("click", () => runTimerStep((timerSession?.index ?? 0) + 1));
+  document.getElementById("timerRestartBtn").addEventListener("click", () => runTimerStep(0));
+  document.getElementById("timerFeedBtn").addEventListener("click", feedDwaekki);
+  document.getElementById("timerBackHomeBtn").addEventListener("click", () => navigateTo("home"));
+}
+function runTimerStep(index) {
+  if (!timerSession) return;
+  clearTimerTick();
+  if (index >= timerSession.steps.length) {
+    finishTimerSession();
+    return;
+  }
+  timerSession.index = index;
+  const step = timerSession.steps[index];
+  timerSession.remainingMs = step.seconds * 1000;
+  timerSession.endTime = Date.now() + timerSession.remainingMs;
+  timerSession.paused = false;
+
+  const isRest = step.type === "rest";
+  document.getElementById("timerStepLabel").textContent = isRest ? t("REST", "REST") : t(`Exercise ${Math.floor(index / 2) + 1}`, `Exercise ${Math.floor(index / 2) + 1}`);
+  document.getElementById("timerExerciseName").textContent = isRest ? t("Rest", "Rest") : step.exercise.name;
+  const restMsgEl = document.getElementById("timerRestMsg");
+  if (isRest) {
+    const msg = REST_MESSAGES[index % REST_MESSAGES.length];
+    restMsgEl.textContent = "🐷 " + t(msg.en, msg.hi);
+    restMsgEl.classList.remove("hidden");
+  } else {
+    restMsgEl.classList.add("hidden");
+  }
+  const next = timerSession.steps[index + 1];
+  document.getElementById("timerNextLabel").textContent = next
+    ? t(`Next: ${next.type === "rest" ? "Rest" : next.exercise.name}`, `Next: ${next.type === "rest" ? "Rest" : next.exercise.name}`)
+    : t("Next: Finish! 🎉", "Next: Finish! 🎉");
+  document.getElementById("timerPauseBtn").textContent = "⏸";
+  playTimerBeep();
+  vibrateTimer();
+  tickTimer();
+}
+function tickTimer() {
+  clearTimerTick();
+  timerSession.tickId = setInterval(() => {
+    if (!timerSession || timerSession.paused) return;
+    const remaining = timerSession.endTime - Date.now();
+    if (remaining <= 0) {
+      runTimerStep(timerSession.index + 1);
+      return;
+    }
+    renderTimerDisplay(remaining, timerSession.steps[timerSession.index].seconds);
+  }, 200);
+  renderTimerDisplay(timerSession.remainingMs, timerSession.steps[timerSession.index].seconds);
+}
+function clearTimerTick() {
+  if (timerSession && timerSession.tickId) clearInterval(timerSession.tickId);
+}
+function renderTimerDisplay(remainingMs, totalSeconds) {
+  const secs = Math.max(0, Math.ceil(remainingMs / 1000));
+  const mm = String(Math.floor(secs / 60)).padStart(2, "0");
+  const ss = String(secs % 60).padStart(2, "0");
+  document.getElementById("timerCountdown").textContent = `${mm}:${ss}`;
+  const pct = Math.max(0, Math.min(100, 100 - (remainingMs / (totalSeconds * 1000)) * 100));
+  document.getElementById("timerProgressFill").style.width = pct + "%";
+}
+function toggleTimerPause() {
+  if (!timerSession) return;
+  const btn = document.getElementById("timerPauseBtn");
+  if (timerSession.paused) {
+    timerSession.endTime = Date.now() + timerSession.remainingMs;
+    timerSession.paused = false;
+    btn.textContent = "⏸";
+  } else {
+    timerSession.remainingMs = timerSession.endTime - Date.now();
+    timerSession.paused = true;
+    btn.textContent = "▶";
+  }
+}
+function finishTimerSession() {
+  clearTimerTick();
+  document.getElementById("timerActiveScreen").classList.add("hidden");
+  document.getElementById("timerDoneScreen").classList.remove("hidden");
+  document.getElementById("feedMsg").textContent = "";
+  playTimerBeep();
+  vibrateTimer();
+}
+function playTimerBeep() {
+  const soundOn = document.getElementById("timerSoundToggle")?.checked;
+  if (!soundOn) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.3);
+  } catch (e) { /* audio not available, skip silently */ }
+}
+function vibrateTimer() {
+  const vibOn = document.getElementById("timerVibrationToggle")?.checked;
+  if (vibOn && navigator.vibrate) navigator.vibrate(150);
+}
+function stopTimerSession() {
+  clearTimerTick();
+  timerSession = null;
+}
+
+// ---------- Dwaekki Music ----------
+function initMusic() {
+  const input = document.getElementById("localAudioInput");
+  const player = document.getElementById("localAudioPlayer");
+  input.addEventListener("change", () => {
+    if (input.files && input.files[0]) {
+      const url = URL.createObjectURL(input.files[0]);
+      player.src = url;
+      player.classList.remove("hidden");
+      player.play().catch(() => {});
+    }
+  });
+}
+
+
 // Simple offline canvas runner. Dwaekki jumps over 💥, collects 💧🥕⭐❤️.
 // No calories, no weight — points here are just game points.
 let gameLoopId = null;
@@ -709,6 +981,7 @@ function endGame() {
 // ---------- render everything (used after lang switch) ----------
 function renderAll() {
   initMission();
+  renderFoodBox();
   renderNothing();
   renderEquipmentTicks();
   renderEquipmentList();
@@ -740,6 +1013,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initWeek();
   initClearData();
   initGame();
+  initTimerControls();
+  initMusic();
+  renderFoodBox();
+  document.getElementById("feedDwaekkiBtn").addEventListener("click", feedDwaekki);
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js").catch(() => {});

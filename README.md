@@ -4,7 +4,21 @@ A free, install-anywhere workout + balanced-meal companion — built for STAYs
 who don't have money or gear to spare, and don't want pressure either.
 
 ## What's inside
-- **Home** — daily mission, points, hydration reminders, quick links
+- **⏱️ Guided Workout Timer** — pick "▶ Start Timer" on any exercise, or "▶ Start
+  Timed Workout" after the Time Finder builds you a routine. Timestamp-based
+  countdown (won't drift if the screen locks), pause/skip/restart, sound +
+  vibration toggles, a cute rest screen, and a completion screen that feeds
+  into Feed Dwaekki.
+- **🎧 Dwaekki Music** — quick-launch buttons to Spotify/YouTube Music/Apple
+  Music in a new tab, plus a local file player for music already on your
+  device. No login, no OAuth, no API key — Dwaekki doesn't choose your music,
+  you do.
+- **🐷 Dwaekki's Little Day** — a rotating 5-of-7 gentle daily checklist
+  (workout, water, stretch, screen break, rest, balanced meal — not just
+  exercise). Each completed mission earns a random food emoji into
+  **Dwaekki's Food Box**, which you can then use to Feed Dwaekki (with a
+  little mood-change animation).
+- **Home** — daily missions, points, hydration reminders, quick links
 - **Workout Library** — filter by goal (Endurance, Strength, Mobility, Sports
   support, General health, Gentle movement, Fitness habit) AND by body part
   (Lower Body, Upper Body, Full Body, Core, Cardio). Every exercise card
