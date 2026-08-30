@@ -651,6 +651,8 @@ const FOOD_STICKERS = [
 
 const DWAEKKI_MOODS = { normal: "🐷", happy: "🐷💗", eating: "🐷😋" };
 
+const APP_VERSION = "1.6.0";
+
 // ===================== DWAEKKI DASH (mini game) =====================
 // A tiny offline endless-runner. Collect good things, dodge the one unsafe
 // obstacle type. No calories, no weight, no pressure — just a little fun.

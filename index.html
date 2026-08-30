@@ -59,30 +59,13 @@
         <button class="quick-tile" data-nav="ai" data-en="🤖 Ask Dwaekki" data-hi="🤖 Dwaekki se poocho">🤖 Ask Dwaekki</button>
         <button class="quick-tile" data-nav="food" data-en="🍚 Build a meal" data-hi="🍚 Meal banao">🍚 Build a meal</button>
         <button class="quick-tile" data-nav="week" data-en="📅 My Week" data-hi="📅 Meri Week">📅 My Week</button>
-        <button class="quick-tile" data-nav="game" data-en="🎮 Dwaekki Dash" data-hi="🎮 Dwaekki Dash">🎮 Dwaekki Dash</button>
+        <button class="quick-tile" data-nav="game" data-en="🎮 Dwaekki Play" data-hi="🎮 Dwaekki Play">🎮 Dwaekki Play</button>
         <button class="quick-tile" data-nav="music" data-en="🎧 Dwaekki Music" data-hi="🎧 Dwaekki Music">🎧 Dwaekki Music</button>
-      </div>
-
-      <div class="mission-card">
-        <h3 data-en="🐷 Dwaekki's Little Day" data-hi="🐷 Dwaekki Ka Little Day">🐷 Dwaekki's Little Day</h3>
-        <p class="soft-note" data-en="Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki." data-hi="Chhote wellbeing missions — sirf exercise nahi. Har ek se Dwaekki ke liye ek random food emoji milta hai.">Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki.</p>
-        <div id="missionChecklist" class="mission-checklist"></div>
-        <p class="points-note"><span id="missionProgress">0/5</span> <span data-en="completed today" data-hi="aaj complete hue">completed today</span></p>
-      </div>
-
-      <div class="foodbox-card">
-        <div class="foodbox-header">
-          <h3 data-en="🍱 Dwaekki's Food Box" data-hi="🍱 Dwaekki Ka Food Box">🍱 Dwaekki's Food Box</h3>
-          <span id="dwaekkiMoodEmoji" class="dwaekki-mood">🐷</span>
-        </div>
-        <div id="foodBoxGrid" class="foodbox-grid"></div>
-        <button id="feedDwaekkiBtn" class="btn-secondary" data-en="🐰 Feed Dwaekki" data-hi="🐰 Dwaekki Ko Khilao">🐰 Feed Dwaekki</button>
-        <p id="feedMsg" class="soft-note"></p>
       </div>
 
       <div class="hydration-card">
         <h3 data-en="💧 Hydration Reminders" data-hi="💧 Paani peene ke reminders">💧 Hydration Reminders</h3>
-        <p class="soft-note" data-en="Gentle nudges, no strict targets — everyone's needs vary." data-hi="Halke reminders, koi strict target nahi — sabki zaroorat alag hoti hai.">Gentle nudges, no strict targets — everyone's needs vary.</p>
+        <p class="soft-note" data-en="Gentle nudges, no strict targets — everyone's needs vary." data-hi="Halke nudges, koi strict target nahi — sabki zaroorat alag hoti hai.">Gentle nudges, no strict targets — everyone's needs vary.</p>
         <label class="switch-row">
           <span data-en="Turn on reminders" data-hi="Reminders on karo">Turn on reminders</span>
           <input type="checkbox" id="hydrationToggle" />
@@ -225,7 +208,8 @@
         <ul>
           <li data-en="Everything (name, progress, week planner, points) stays on this device." data-hi="Sab kuch (naam, progress, week planner, points) is device par hi rehta hai.">Everything (name, progress, week planner, points) stays on this device.</li>
           <li data-en="No location, contacts, or personal/health data is collected." data-hi="Koi location, contacts, ya personal/health data collect nahi hota.">No location, contacts, or personal/health data is collected.</li>
-          <li data-en="Ask Dwaekki runs on your device — nothing you type is sent anywhere." data-hi="Ask Dwaekki tumhare device par chalta hai — jo bhi type karo, kahin bheja nahi jaata.">Ask Dwaekki runs on your device — nothing you type is sent anywhere.</li>
+          <li data-en="Your offline Dwaekki tools (workouts, food ideas, the mission game) run fully on this device." data-hi="Tumhare offline Dwaekki tools (workouts, food ideas, mission game) poori tarah is device par chalte hain.">Your offline Dwaekki tools (workouts, food ideas, the mission game) run fully on this device.</li>
+          <li data-en="When you use Ask Dwaekki's online AI, your message is sent to the AI service Dwaekki uses (Puter) so it can reply — Dwaekki Gym itself doesn't store that chat history on a server." data-hi="Jab tum Ask Dwaekki ka online AI use karte ho, tumhara message us AI service (Puter) ko bheja jaata hai jo Dwaekki use karta hai, taaki woh reply de sake — Dwaekki Gym khud us chat history ko kisi server par store nahi karta.">When you use Ask Dwaekki's online AI, your message is sent to the AI service Dwaekki uses (Puter) so it can reply — Dwaekki Gym itself doesn't store that chat history on a server.</li>
         </ul>
         <button id="clearDataBtn" class="btn-danger" data-en="Clear My Data" data-hi="Mera Data Clear Karo">Clear My Data</button>
       </div>
@@ -233,6 +217,7 @@
       <div class="credit-box">
         <p data-en="Dwaekki Gym created by Tulika Soni ♡ × STAY Project" data-hi="Dwaekki Gym banaya gaya Tulika Soni ♡ × STAY Project dwara">Dwaekki Gym created by Tulika Soni ♡ × STAY Project</p>
         <p class="tiny-note">Copyright © — Original fan-made project. Not affiliated with JYP Entertainment.</p>
+        <p class="tiny-note" id="versionLabel"></p>
       </div>
     </section>
 
@@ -294,19 +279,38 @@
       </div>
     </section>
 
-    <!-- ---------- DWAEKKI DASH (mini game) ---------- -->
+    <!-- ---------- DWAEKKI PLAY (gym scene + missions + food box + Dwaekki Dash) ---------- -->
     <section id="view-game" class="view">
-      <h2 data-en="🎮 Dwaekki Dash" data-hi="🎮 Dwaekki Dash">🎮 Dwaekki Dash</h2>
-      <p class="soft-note" data-en="Tap or press Space to jump. Collect 💧🥕⭐❤️, dodge 💥. Just for fun — no calories, no weight, no pressure." data-hi="Jump karne ke liye tap ya Space press karo. 💧🥕⭐❤️ collect karo, 💥 se bacho. Sirf fun ke liye — koi calories, weight, ya pressure nahi.">Tap or press Space to jump. Collect 💧🥕⭐❤️, dodge 💥. Just for fun — no calories, no weight, no pressure.</p>
-      <div class="game-wrap">
-        <canvas id="gameCanvas" width="350" height="220"></canvas>
-        <div class="game-hud">
-          <span data-en="Score:" data-hi="Score:">Score:</span> <span id="gameScore">0</span>
-          &nbsp;·&nbsp;
-          <span data-en="Best:" data-hi="Best:">Best:</span> <span id="gameBest">0</span>
+      <h2 data-en="🎮 Dwaekki Play" data-hi="🎮 Dwaekki Play">🎮 Dwaekki Play</h2>
+      <p class="soft-note" data-en="A little gym scene, your daily missions, and Dwaekki's food box — all in one place." data-hi="Ek chhoti gym scene, tumhare daily missions, aur Dwaekki ka food box — sab ek hi jagah.">A little gym scene, your daily missions, and Dwaekki's food box — all in one place.</p>
+
+      <div class="gym-scene">
+        <div class="gym-character" style="animation-delay:0s;">🐰🐷</div>
+        <div class="gym-character" style="animation-delay:0.15s;">🐰</div>
+        <div class="gym-character" style="animation-delay:0.3s;">🐺</div>
+        <div class="gym-character" style="animation-delay:0.45s;">🥟</div>
+        <div class="gym-character" style="animation-delay:0.6s;">🐿️</div>
+        <div class="gym-character" style="animation-delay:0.75s;">🐥</div>
+        <div class="gym-character" style="animation-delay:0.9s;">🐶</div>
+        <div class="gym-character" style="animation-delay:1.05s;">🦊</div>
+      </div>
+      <p class="soft-note" style="text-align:center;font-style:italic;" data-en="A little fan-made tribute, doing gym moves alongside you. 💗" data-hi="Ek chhota fan-made tribute, tumhare saath gym moves karte hue. 💗">A little fan-made tribute, doing gym moves alongside you. 💗</p>
+
+      <div class="mission-card">
+        <h3 data-en="🐷 Dwaekki's Little Day" data-hi="🐷 Dwaekki Ka Little Day">🐷 Dwaekki's Little Day</h3>
+        <p class="soft-note" data-en="Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki." data-hi="Chhote wellbeing missions — sirf exercise nahi. Har ek se Dwaekki ke liye ek random food emoji milta hai.">Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki.</p>
+        <div id="missionChecklist" class="mission-checklist"></div>
+        <p class="points-note"><span id="missionProgress">0/5</span> <span data-en="completed today" data-hi="aaj complete hue">completed today</span></p>
+      </div>
+
+      <div class="foodbox-card">
+        <div class="foodbox-header">
+          <h3 data-en="🍱 Dwaekki's Food Box" data-hi="🍱 Dwaekki Ka Food Box">🍱 Dwaekki's Food Box</h3>
+          <span id="dwaekkiMoodEmoji" class="dwaekki-mood">🐷</span>
         </div>
-        <button id="gameStartBtn" class="btn-primary" data-en="Start" data-hi="Shuru Karo">Start</button>
-        <p id="gameOverMsg" class="soft-note hidden" data-en="Oof! Tap Start to try again." data-hi="Oof! Dobara try karne ke liye Start tap karo.">Oof! Tap Start to try again.</p>
+        <div id="foodBoxGrid" class="foodbox-grid"></div>
+        <button id="feedDwaekkiBtn" class="btn-secondary" data-en="🐰 Feed Dwaekki" data-hi="🐰 Dwaekki Ko Khilao">🐰 Feed Dwaekki</button>
+        <p id="feedMsg" class="soft-note"></p>
       </div>
     </section>
 
@@ -322,6 +326,11 @@
 </div>
 
 <div id="hydrationToast" class="toast hidden"></div>
+
+<div id="updateBanner" class="update-banner hidden">
+  <span data-en="🐷 A new Dwaekki update is ready! We've added some new things for you. ✨" data-hi="🐷 Ek naya Dwaekki update taiyar hai! Kuch naya add kiya hai tumhare liye. ✨">🐷 A new Dwaekki update is ready! We've added some new things for you. ✨</span>
+  <button id="updateNowBtn" data-en="Update now" data-hi="Ab update karo">Update now</button>
+</div>
 
 <!-- Google Website Translator — free, no key, ~100+ languages.
      Purely optional: if it fails to load (no internet, blocked), the app

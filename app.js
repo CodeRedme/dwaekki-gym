@@ -80,7 +80,6 @@ function navigateTo(viewId) {
   const tabBtn = document.querySelector(`.tab-btn[data-nav="${tabMap[viewId] || viewId}"]`);
   if (tabBtn) tabBtn.classList.add("active");
   if (viewId === "lowenergy") renderLowEnergy();
-  if (viewId !== "game") stopGame();
   if (viewId !== "timer") stopTimerSession();
   window.scrollTo(0, 0);
 }
@@ -125,11 +124,11 @@ function renderMissionChecklist() {
     const m = GENTLE_MISSIONS.find((x) => x.id === id);
     const done = !!map.done[id];
     return `<label class="mission-item ${done ? "done" : ""}">
-      <input type="checkbox" data-mission="${id}" ${done ? "checked" : ""} />
+      <input type="checkbox" data-mission="${id}" ${done ? "checked disabled" : ""} />
       <span>${t(m.en, m.hi)}</span>
     </label>`;
   }).join("");
-  container.querySelectorAll("input[type=checkbox]").forEach((cb) => {
+  container.querySelectorAll("input[type=checkbox]:not([disabled])").forEach((cb) => {
     cb.addEventListener("change", () => onMissionToggle(cb.getAttribute("data-mission"), cb.checked));
   });
   updateMissionProgress(ids, map);
@@ -139,16 +138,19 @@ function updateMissionProgress(ids, map) {
   document.getElementById("missionProgress").textContent = `${doneCount}/${ids.length}`;
 }
 function onMissionToggle(id, checked) {
+  // A mission can only ever be completed once per day — checking it locks
+  // it (disabled in the re-render), so this only ever fires on the
+  // check-for-the-first-time transition. No un-check path exists, so no
+  // sticker-farming loop is possible.
+  if (!checked) return;
   const map = getMissionDoneMap();
-  const wasAlreadyDone = !!map.done[id];
-  map.done[id] = checked;
+  if (map.done[id]) return; // already claimed, ignore
+  map.done[id] = true;
   localStorage.setItem(LS.missionDone + "_map", JSON.stringify(map));
 
-  if (checked && !wasAlreadyDone) {
-    const newPoints = parseInt(localStorage.getItem(LS.points) || "0", 10) + 5;
-    localStorage.setItem(LS.points, String(newPoints));
-    awardFoodSticker();
-  }
+  const newPoints = parseInt(localStorage.getItem(LS.points) || "0", 10) + 5;
+  localStorage.setItem(LS.points, String(newPoints));
+  awardFoodSticker();
   renderMissionChecklist();
 }
 
@@ -419,11 +421,20 @@ function renderLibrary() {
 }
 
 // ---------- Food ----------
-function initFood() {
+// initFoodOnce attaches listeners exactly once (called at startup).
+// renderFood only updates the UI (labels, options) — safe to call repeatedly
+// on every language switch without piling up duplicate event listeners.
+function initFoodOnce() {
   const regionSelect = document.getElementById("regionSelect");
-  regionSelect.innerHTML = FOOD_REGIONS.map((r) => `<option value="${r.id}">${t(r.en, r.hi)}</option>`).join("");
-  regionSelect.value = state.foodRegion;
   regionSelect.addEventListener("change", () => { state.foodRegion = regionSelect.value; renderMeals(); });
+  initIngredientTool();
+  renderFood();
+}
+function renderFood() {
+  const regionSelect = document.getElementById("regionSelect");
+  const selectedValue = regionSelect.value || state.foodRegion;
+  regionSelect.innerHTML = FOOD_REGIONS.map((r) => `<option value="${r.id}">${t(r.en, r.hi)}</option>`).join("");
+  regionSelect.value = selectedValue || state.foodRegion;
 
   const dietToggle = document.getElementById("dietToggle");
   dietToggle.innerHTML = DIETS.map((d) => `<button class="diet-btn ${d.id === state.foodDiet ? "active" : ""}" data-diet="${d.id}">${t(d.en, d.hi)}</button>`).join("");
@@ -438,7 +449,6 @@ function initFood() {
 
   renderMeals();
   renderMealBuilder();
-  initIngredientTool();
 }
 function renderMeals() {
   const ideas = (MEAL_IDEAS[state.foodRegion] && MEAL_IDEAS[state.foodRegion][state.foodDiet]) || [];
@@ -836,13 +846,15 @@ function stopTimerSession() {
 }
 
 // ---------- Dwaekki Music ----------
+let currentAudioObjectUrl = null;
 function initMusic() {
   const input = document.getElementById("localAudioInput");
   const player = document.getElementById("localAudioPlayer");
   input.addEventListener("change", () => {
     if (input.files && input.files[0]) {
-      const url = URL.createObjectURL(input.files[0]);
-      player.src = url;
+      if (currentAudioObjectUrl) URL.revokeObjectURL(currentAudioObjectUrl);
+      currentAudioObjectUrl = URL.createObjectURL(input.files[0]);
+      player.src = currentAudioObjectUrl;
       player.classList.remove("hidden");
       player.play().catch(() => {});
     }
@@ -850,133 +862,9 @@ function initMusic() {
 }
 
 
-// Simple offline canvas runner. Dwaekki jumps over 💥, collects 💧🥕⭐❤️.
-// No calories, no weight — points here are just game points.
-let gameLoopId = null;
-let gameState = null;
-
-function initGame() {
-  const canvas = document.getElementById("gameCanvas");
-  const startBtn = document.getElementById("gameStartBtn");
-  const best = parseInt(localStorage.getItem(LS.gameBest) || "0", 10);
-  document.getElementById("gameBest").textContent = best;
-
-  startBtn.addEventListener("click", startGame);
-  canvas.addEventListener("pointerdown", () => jumpDwaekki());
-  window.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && document.getElementById("view-game").classList.contains("active")) {
-      e.preventDefault();
-      jumpDwaekki();
-    }
-  });
-}
-
-function startGame() {
-  stopGame();
-  document.getElementById("gameOverMsg").classList.add("hidden");
-  const canvas = document.getElementById("gameCanvas");
-  const ctx = canvas.getContext("2d");
-  const W = canvas.width, H = canvas.height;
-  const groundY = H - 30;
-
-  gameState = {
-    ctx, W, H, groundY,
-    dwaekkiX: 40, dwaekkiY: groundY - 26, dwaekkiVY: 0, jumping: false,
-    speed: 3.2, spawnTimer: 0, score: 0, items: [], running: true,
-  };
-  document.getElementById("gameScore").textContent = "0";
-  document.getElementById("gameStartBtn").textContent = t("Restart", "Dobara Shuru");
-  gameLoop();
-}
-
-function stopGame() {
-  if (gameLoopId) cancelAnimationFrame(gameLoopId);
-  gameLoopId = null;
-  if (gameState) gameState.running = false;
-}
-
-function jumpDwaekki() {
-  if (!gameState || !gameState.running) return;
-  if (!gameState.jumping) {
-    gameState.jumping = true;
-    gameState.dwaekkiVY = -8.5;
-  }
-}
-
-function gameLoop() {
-  if (!gameState || !gameState.running) return;
-  const s = gameState;
-  const ctx = s.ctx;
-
-  // physics
-  if (s.jumping) {
-    s.dwaekkiVY += 0.55; // gravity
-    s.dwaekkiY += s.dwaekkiVY;
-    if (s.dwaekkiY >= s.groundY - 26) {
-      s.dwaekkiY = s.groundY - 26;
-      s.jumping = false;
-      s.dwaekkiVY = 0;
-    }
-  }
-
-  // spawn items
-  s.spawnTimer -= 1;
-  if (s.spawnTimer <= 0) {
-    s.spawnTimer = 55 + Math.floor(Math.random() * 40);
-    const isBad = Math.random() < 0.3;
-    if (isBad) {
-      s.items.push({ x: s.W + 20, y: s.groundY - 22, symbol: GAME_ITEMS.bad.symbol, bad: true });
-    } else {
-      const good = GAME_ITEMS.good[Math.floor(Math.random() * GAME_ITEMS.good.length)];
-      s.items.push({ x: s.W + 20, y: s.groundY - 20 - Math.floor(Math.random() * 40), symbol: good.symbol, points: good.points, bad: false });
-    }
-  }
-
-  // move + collide
-  const dwX = s.dwaekkiX, dwY = s.dwaekkiY;
-  for (let i = s.items.length - 1; i >= 0; i--) {
-    const it = s.items[i];
-    it.x -= s.speed;
-    if (it.x < -20) { s.items.splice(i, 1); continue; }
-    const dx = Math.abs(it.x - (dwX + 13));
-    const dy = Math.abs(it.y - (dwY + 13));
-    if (dx < 22 && dy < 22) {
-      if (it.bad) {
-        endGame();
-        return;
-      } else {
-        s.score += it.points;
-        document.getElementById("gameScore").textContent = s.score;
-        s.items.splice(i, 1);
-      }
-    }
-  }
-  s.speed = 3.2 + s.score * 0.03;
-
-  // draw
-  ctx.clearRect(0, 0, s.W, s.H);
-  ctx.fillStyle = "#f3d7e2";
-  ctx.fillRect(0, s.groundY, s.W, 2);
-  ctx.font = "26px sans-serif";
-  ctx.textBaseline = "top";
-  ctx.fillText("🐷", dwX, dwY);
-  s.items.forEach((it) => ctx.fillText(it.symbol, it.x, it.y));
-
-  gameLoopId = requestAnimationFrame(gameLoop);
-}
-
-function endGame() {
-  if (!gameState) return;
-  gameState.running = false;
-  if (gameLoopId) cancelAnimationFrame(gameLoopId);
-  const best = parseInt(localStorage.getItem(LS.gameBest) || "0", 10);
-  if (gameState.score > best) {
-    localStorage.setItem(LS.gameBest, String(gameState.score));
-    document.getElementById("gameBest").textContent = gameState.score;
-  }
-  document.getElementById("gameOverMsg").classList.remove("hidden");
-  document.getElementById("gameStartBtn").textContent = t("Start", "Shuru Karo");
-}
+// Dwaekki Dash (the jump-and-collect canvas game) was retired in favor of
+// the "Dwaekki Play" gym scene + missions + food box — see view-game in
+// index.html and the mission/food-box functions above.
 
 // ---------- render everything (used after lang switch) ----------
 function renderAll() {
@@ -986,7 +874,7 @@ function renderAll() {
   renderEquipmentTicks();
   renderEquipmentList();
   renderLibrary();
-  initFood();
+  renderFood();
   renderWeek();
   initHomeMissedNote();
   renderSafetyBanners();
@@ -1008,17 +896,56 @@ document.addEventListener("DOMContentLoaded", () => {
   renderEquipmentList();
   renderLibrary();
   renderSafetyBanners();
-  initFood();
+  initFoodOnce();
   initChat();
   initWeek();
   initClearData();
-  initGame();
   initTimerControls();
   initMusic();
   renderFoodBox();
   document.getElementById("feedDwaekkiBtn").addEventListener("click", feedDwaekki);
 
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js").catch(() => {});
-  }
+  const versionLabel = document.getElementById("versionLabel");
+  if (versionLabel) versionLabel.textContent = `Dwaekki Gym v${APP_VERSION} 🐷`;
+
+  initServiceWorker();
 });
+
+// ---------- Self-updating service worker + update banner ----------
+function initServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+
+  navigator.serviceWorker.register("service-worker.js").then((reg) => {
+    // A new version might already be sitting there waiting from a previous visit.
+    if (reg.waiting && navigator.serviceWorker.controller) showUpdateBanner(reg);
+
+    reg.addEventListener("updatefound", () => {
+      const newWorker = reg.installing;
+      if (!newWorker) return;
+      newWorker.addEventListener("statechange", () => {
+        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+          showUpdateBanner(reg);
+        }
+      });
+    });
+
+    // Check for a fresh version whenever the person returns to the tab.
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") reg.update().catch(() => {});
+    });
+  }).catch(() => {});
+
+  let hasReloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (hasReloaded) return;
+    hasReloaded = true;
+    window.location.reload();
+  });
+}
+function showUpdateBanner(reg) {
+  const banner = document.getElementById("updateBanner");
+  banner.classList.remove("hidden");
+  document.getElementById("updateNowBtn").addEventListener("click", () => {
+    if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
+  }, { once: true });
+}

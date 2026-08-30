@@ -310,6 +310,7 @@ h3 { font-size: 1rem; color: var(--pink-hot); margin: 0 0 8px; }
   font-size: 0.85rem;
 }
 .mission-item input { width: 18px; height: 18px; accent-color: var(--pink-hot); flex-shrink: 0; }
+.mission-item input:disabled { opacity: 0.7; cursor: default; }
 .mission-item.done { background: #fdeef4; border-color: var(--pink-mid); }
 .mission-item.done span { text-decoration: line-through; color: var(--ink-soft); }
 
@@ -616,25 +617,31 @@ h3 { font-size: 1rem; color: var(--pink-hot); margin: 0 0 8px; }
 }
 #localAudioInput { width: 100%; font-size: 0.82rem; }
 
-/* ===== Dwaekki Dash (mini game) ===== */
-.game-wrap { text-align: center; }
-#gameCanvas {
-  width: 100%;
-  max-width: 350px;
-  aspect-ratio: 350 / 220;
-  background: linear-gradient(180deg, #fdf3f6 0%, #ffe4ee 100%);
+/* ===== Dwaekki Play: mini gym scene ===== */
+.gym-scene {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  background-image: linear-gradient(rgba(255, 250, 252, 0.55), rgba(255, 240, 246, 0.7)), url("gym-bg.jpg");
+  background-size: cover;
+  background-position: center;
   border: 2px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius);
   box-shadow: var(--shadow);
-  touch-action: manipulation;
+  padding: 20px 10px;
+  margin-bottom: 6px;
 }
-.game-hud {
-  margin: 10px 0;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--pink-hot);
+.gym-character {
+  font-size: 1.8rem;
+  text-align: center;
+  white-space: nowrap;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+  animation: gymBounce 1.4s ease-in-out infinite;
 }
-.game-wrap .btn-primary { max-width: 200px; margin: 0 auto; }
+@keyframes gymBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(-8deg); }
+}
 
 /* ===== Toast ===== */
 .toast {
@@ -649,6 +656,36 @@ h3 { font-size: 1rem; color: var(--pink-hot); margin: 0 0 8px; }
   font-size: 0.82rem;
   z-index: 50;
   box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
+
+.update-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--pink-deep);
+  color: #fff;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 60;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+.update-banner button {
+  background: #fff;
+  color: var(--pink-hot);
+  border: none;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-weight: 800;
+  font-size: 0.75rem;
+  flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
