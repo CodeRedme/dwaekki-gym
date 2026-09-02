@@ -1,6 +1,6 @@
 /* ===================== DWAEKKI GYM — DATA ===================== */
 
-const APP_VERSION = "1.4.0";
+const APP_VERSION = "1.5.0";
 
 const EXERCISES = {
   none: {
@@ -68,55 +68,205 @@ const ACHIEVEMENTS = [
   {id:"arcade_fan", emoji:"🎮", name:"Arcade Fan", desc:"Played 3 different arcade games", check:s=>s.gamesPlayed.length>=3}
 ];
 
+const FOOD_REGIONS = [
+  { id: "indian", label: "🇮🇳 South Asian" },
+  { id: "korean", label: "🇰🇷 Korean" },
+  { id: "japanese", label: "🇯🇵 Japanese" },
+  { id: "chinese", label: "🇨🇳 Chinese" },
+  { id: "filipino", label: "🇵🇭 Filipino" },
+  { id: "indonesian", label: "🇮🇩 Indonesian" },
+  { id: "thai", label: "🇹🇭 Thai" },
+  { id: "vietnamese", label: "🇻🇳 Vietnamese" },
+  { id: "mexican", label: "🇲🇽 Mexican" },
+  { id: "italian", label: "🇮🇹 Italian" },
+  { id: "mediterranean", label: "🌊 Mediterranean" },
+  { id: "american", label: "🇺🇸 American" },
+  { id: "british", label: "🇬🇧 British" },
+  { id: "african", label: "🌍 African-inspired" }
+];
+
 const MEALS = {
   indian: {
-    veg: ["Dal + rice + sabzi", "Khichdi + curd", "Roti + dal + vegetables", "Chana + rice", "Vegetable pulao + raita"],
-    eggitarian: ["Egg curry + rice", "Egg bhurji + roti", "Egg fried rice + vegetables"],
-    nonveg: ["Chicken curry + rice", "Fish curry + rice", "Chicken + roti + salad"]
+    veg: [
+      { name: "Dal, rice & sautéed sabzi", note: "Lentils + a vegetable + whole grain — a classic balanced plate." },
+      { name: "Vegetable khichdi with curd", note: "Rice + lentils cooked together, topped with yogurt for protein." },
+      { name: "Chana chaat with roti", note: "Chickpeas, chopped veg, a squeeze of lemon, whole-wheat roti." }
+    ],
+    eggitarian: [
+      { name: "Egg bhurji with roti & salad", note: "Scrambled eggs with onion-tomato, whole-wheat roti on the side." },
+      { name: "Boiled egg + dal + rice", note: "Add a boiled egg to a regular dal-rice plate for extra protein." }
+    ],
+    nonveg: [
+      { name: "Chicken curry with rice & salad", note: "Lean chicken, a grain, and something raw or lightly cooked veg." },
+      { name: "Grilled fish with sabzi & roti", note: "Simple grilled or pan-cooked fish, a vegetable side, whole grain." }
+    ]
   },
   korean: {
-    veg: ["Bibimbap (veg version) + rice", "Tofu + kimchi + rice", "Doenjang jjigae (soybean stew) + rice"],
-    eggitarian: ["Gyeran-jjim (steamed egg) + rice", "Egg + kimchi fried rice"],
-    nonveg: ["Bulgogi + rice", "Kimchi jjigae with pork + rice", "Grilled chicken + rice + banchan"]
+    veg: [
+      { name: "Bibimbap with tofu", note: "Rice, sautéed veg, tofu, a little gochujang — mix it all together." },
+      { name: "Doenjang-jjigae (soybean stew) with rice", note: "Soybean paste stew with vegetables and tofu, served with rice." }
+    ],
+    eggitarian: [
+      { name: "Gyeran-bap (egg rice)", note: "Warm rice topped with a fried or mixed egg, sesame oil, and soy sauce." },
+      { name: "Kimchi fried rice with a fried egg", note: "Quick, warming, and balanced with veg from the kimchi." }
+    ],
+    nonveg: [
+      { name: "Bulgogi with rice & vegetables", note: "Thin-sliced marinated beef or chicken, grilled, with rice and a veg side." },
+      { name: "Doenjang-jjigae with fish & rice", note: "Same stew base, with a lean fish added for protein." }
+    ]
   },
   japanese: {
-    veg: ["Miso soup + rice + vegetables", "Tofu don (rice bowl)", "Vegetable yakisoba"],
-    eggitarian: ["Tamago (egg) rice bowl", "Oyakodon-style egg + rice (veg swap)"],
-    nonveg: ["Teriyaki chicken + rice", "Salmon + rice + miso soup", "Chicken katsu + rice"]
+    veg: [
+      { name: "Vegetable & tofu miso soup with rice", note: "Light broth, tofu, seasonal vegetables, steamed rice." },
+      { name: "Vegetable yaki udon", note: "Stir-fried udon noodles with mixed vegetables and soy-based sauce." }
+    ],
+    eggitarian: [
+      { name: "Tamagoyaki with rice & miso soup", note: "Japanese rolled omelette, rice, and a light soup." },
+      { name: "Onigiri with a soft-boiled egg", note: "Rice balls plus an egg for extra protein." }
+    ],
+    nonveg: [
+      { name: "Grilled salmon, rice & miso soup", note: "Simple pan-grilled fish, a grain, and a warm soup." },
+      { name: "Chicken teriyaki with rice & greens", note: "Lean protein, a light sauce, and a vegetable side." }
+    ]
+  },
+  chinese: {
+    veg: [
+      { name: "Mapo tofu (mild) with rice", note: "Tofu simmered in a light savory sauce, served over rice." },
+      { name: "Vegetable fried rice", note: "Rice, mixed veg, soy sauce, a little garlic and ginger." }
+    ],
+    eggitarian: [
+      { name: "Egg fried rice with vegetables", note: "Classic combo — egg for protein, veg for fiber and vitamins." },
+      { name: "Tomato & egg stir-fry with rice", note: "A homestyle staple — soft scrambled eggs with tomato, over rice." }
+    ],
+    nonveg: [
+      { name: "Chicken & vegetable stir-fry with rice", note: "Lean protein, colorful veg, light sauce, over rice." },
+      { name: "Steamed fish with rice & greens", note: "Simple steamed fish, ginger-scallion, rice, and a vegetable side." }
+    ]
   },
   filipino: {
-    veg: ["Ginisang gulay (sautéed vegetables) + rice", "Tofu sinigang + rice"],
-    eggitarian: ["Tortang talong (eggplant omelette) + rice"],
-    nonveg: ["Chicken adobo + rice", "Sinigang na baboy + rice", "Tinolang manok + rice"]
-  },
-  thai: {
-    veg: ["Vegetable pad see ew", "Tofu green curry + rice", "Som tam (papaya salad) + rice"],
-    eggitarian: ["Thai omelette + rice"],
-    nonveg: ["Chicken pad thai", "Chicken green curry + rice"]
+    veg: [
+      { name: "Ginisang gulay (sautéed mixed vegetables) with rice", note: "Mixed vegetables sautéed with garlic and onion, served with rice." },
+      { name: "Tofu sinigang (sour tofu-vegetable soup) with rice", note: "Tangy tamarind-based soup with tofu and vegetables." }
+    ],
+    eggitarian: [
+      { name: "Tortang talong (eggplant omelette) with rice", note: "Grilled eggplant dipped in egg and pan-fried, with rice." }
+    ],
+    nonveg: [
+      { name: "Chicken tinola with rice", note: "Ginger-based chicken and vegetable soup, served with rice." },
+      { name: "Grilled fish (inihaw) with rice & veg", note: "Simple grilled fish, rice, and a vegetable side." }
+    ]
   },
   indonesian: {
-    veg: ["Gado-gado (veg salad + peanut sauce)", "Tempeh + rice + vegetables"],
-    eggitarian: ["Nasi goreng with egg"],
-    nonveg: ["Chicken satay + rice", "Rendang + rice"]
+    veg: [
+      { name: "Gado-gado (veg salad with peanut dressing)", note: "Mixed vegetables and tofu/tempeh with a light peanut sauce." },
+      { name: "Tempeh & vegetable stir-fry with rice", note: "Tempeh is a great plant protein here, with mixed veg." }
+    ],
+    eggitarian: [
+      { name: "Nasi goreng with a fried egg", note: "Indonesian fried rice topped with a fried egg." }
+    ],
+    nonveg: [
+      { name: "Chicken satay with rice & cucumber salad", note: "Grilled lean protein, grain, and fresh veg." }
+    ]
+  },
+  thai: {
+    veg: [
+      { name: "Vegetable pad see ew with tofu", note: "Noodles, tofu, and greens — swap tofu in for meat easily." },
+      { name: "Tofu green curry with rice", note: "Coconut-based curry with vegetables and tofu, milder spice optional." }
+    ],
+    eggitarian: [
+      { name: "Thai fried rice with a fried egg on top", note: "A quick, balanced staple." }
+    ],
+    nonveg: [
+      { name: "Chicken pad see ew", note: "Stir-fried noodles, lean chicken, and greens." }
+    ]
+  },
+  vietnamese: {
+    veg: [
+      { name: "Vegetable & tofu pho", note: "Light broth noodle soup with tofu and fresh herbs/vegetables." },
+      { name: "Vegetable spring rolls with rice", note: "Fresh veg wrapped in rice paper, light and balanced." }
+    ],
+    eggitarian: [
+      { name: "Banh mi with fried egg & pickled veg", note: "Whole-grain bread, egg, fresh pickled vegetables." }
+    ],
+    nonveg: [
+      { name: "Chicken pho", note: "Lean chicken, rice noodles, herbs, and broth." }
+    ]
+  },
+  mexican: {
+    veg: [
+      { name: "Black bean & rice bowl with veg", note: "Beans + rice makes a complete plant protein, plus veg toppings." },
+      { name: "Veggie tacos with beans", note: "Corn tortillas, beans, and whatever veg you have." }
+    ],
+    eggitarian: [
+      { name: "Huevos rancheros", note: "Eggs over beans and tortilla with tomato salsa." }
+    ],
+    nonveg: [
+      { name: "Grilled chicken tacos with salsa", note: "Lean protein, fresh toppings, corn or whole-wheat tortilla." }
+    ]
+  },
+  italian: {
+    veg: [
+      { name: "Pasta with tomato sauce & veggies", note: "Whole-wheat pasta, tomato sauce, mixed vegetables tossed in." },
+      { name: "Minestrone soup with bread", note: "Vegetable and bean soup, warm and filling." }
+    ],
+    eggitarian: [
+      { name: "Vegetable frittata with bread", note: "Baked egg dish with mixed vegetables, whole-grain bread on the side." }
+    ],
+    nonveg: [
+      { name: "Chicken & vegetable pasta", note: "Lean chicken, whole-wheat pasta, and veg tossed together." }
+    ]
+  },
+  mediterranean: {
+    veg: [
+      { name: "Hummus, falafel & salad wrap", note: "Chickpea-based protein, fresh veg, whole-grain pita." },
+      { name: "Lentil soup with pita", note: "Warm, filling, and protein-rich from the lentils." }
+    ],
+    eggitarian: [
+      { name: "Shakshuka (eggs in tomato sauce)", note: "Eggs poached in a spiced tomato-pepper sauce, with bread." }
+    ],
+    nonveg: [
+      { name: "Grilled chicken shawarma bowl", note: "Lean chicken, rice or salad base, veg toppings." }
+    ]
   },
   american: {
-    veg: ["Bean burrito bowl", "Veggie stir-fry + rice", "Grilled cheese + tomato soup"],
-    eggitarian: ["Scrambled eggs + toast + fruit"],
-    nonveg: ["Grilled chicken + rice + veggies", "Turkey sandwich + salad"]
+    veg: [
+      { name: "Bean & veggie wrap", note: "Beans for protein, mixed veg, whole-wheat wrap." },
+      { name: "Loaded veggie & bean bowl", note: "Rice or quinoa base, beans, roasted veg." }
+    ],
+    eggitarian: [
+      { name: "Veggie omelette with toast", note: "Eggs + chopped vegetables, whole-grain toast on the side." }
+    ],
+    nonveg: [
+      { name: "Grilled chicken salad", note: "Lean chicken over greens with a light dressing." },
+      { name: "Baked fish with roasted veg", note: "Simple oven bake — fish, olive oil, seasonal vegetables." }
+    ]
   },
-  european: {
-    veg: ["Pasta with tomato + vegetables", "Lentil soup + bread", "Vegetable risotto"],
-    eggitarian: ["Spanish omelette (tortilla) + salad"],
-    nonveg: ["Grilled chicken + potatoes + veg", "Baked fish + vegetables"]
+  british: {
+    veg: [
+      { name: "Baked beans on wholegrain toast with veg", note: "Simple, filling, and easy to make anywhere." }
+    ],
+    eggitarian: [
+      { name: "Veggie scramble on toast", note: "Scrambled eggs with mixed vegetables, whole-grain toast." }
+    ],
+    nonveg: [
+      { name: "Grilled chicken with roasted veg", note: "Lean protein and a colorful vegetable side." }
+    ]
   },
-  other: {
-    veg: ["Rice + beans + whatever veggies you have", "Noodles + stir-fried vegetables"],
-    eggitarian: ["Fried rice with egg + vegetables"],
-    nonveg: ["Any protein + rice/noodles + vegetables"]
+  african: {
+    veg: [
+      { name: "Lentil stew with a whole grain", note: "Protein-rich lentils simmered with vegetables, served with rice or an injera-style grain." }
+    ],
+    eggitarian: [
+      { name: "Vegetable stew topped with a boiled egg", note: "Adds easy protein to a veg stew." }
+    ],
+    nonveg: [
+      { name: "Grilled chicken with a grain & greens", note: "Simple lean protein, a grain, and cooked greens." }
+    ]
   }
 };
 
 const BUDGET_MEALS = ["Dal + rice + curd", "Khichdi", "Egg + rice", "Rice + beans/chana", "Noodles + egg + vegetables", "Bread + peanut butter + banana", "Vegetable fried rice"];
+
 
 const SCHOOL_TOPICS = [
   {q:"Why do I need protein?", a:"Protein helps repair and build muscle, skin, hair and more. It's especially important during teenage growth — sources include dal, beans, eggs, yogurt, chicken, fish and tofu."},

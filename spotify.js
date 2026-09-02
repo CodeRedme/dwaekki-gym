@@ -29,7 +29,7 @@ function spotifyBase64UrlEncode(buffer){
 
 async function spotifyLogin(){
   if(!SPOTIFY_CLIENT_ID){
-    alert("Spotify isn't connected yet — Dwaekki's dev still needs to add a Spotify Client ID. Paste a YouTube link below in the meantime! 🐷");
+    alert("Dwaekki's Spotify sign-in isn't switched on yet (the app itself still needs to be registered with Spotify — nothing to do with your account). Try the platform picker below, or paste a YouTube link! 🐷");
     return;
   }
   const verifier = spotifyRandomString(64);
@@ -149,7 +149,7 @@ async function updateSpotifyUI(){
     loginBtn.classList.add("hidden");
     logoutBtn.classList.remove("hidden");
   } else {
-    statusEl.textContent = SPOTIFY_CLIENT_ID ? "Not connected" : "Not connected yet — needs a Spotify Client ID from Dwaekki's dev.";
+    statusEl.textContent = SPOTIFY_CLIENT_ID ? "Not connected" : "Sign-in not switched on yet — Dwaekki's dev needs to register the app with Spotify first (a one-time setup step, unrelated to any user's account).";
     searchWrap.classList.add("hidden");
     loginBtn.classList.remove("hidden");
     logoutBtn.classList.add("hidden");

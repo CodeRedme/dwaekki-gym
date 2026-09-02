@@ -133,6 +133,13 @@ button{font-family:inherit; cursor:pointer;}
 /* ===== Steps / choices ===== */
 .step{margin-bottom:22px;}
 .choice-row{display:flex; gap:8px; flex-wrap:wrap;}
+.food-controls{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;}
+.control-block{flex:1; min-width:220px;}
+.control-block label{display:block; font-size:.8rem; font-weight:700; margin-bottom:6px; color:var(--plum); opacity:.8;}
+.control-block select{
+  width:100%; padding:10px 14px; border-radius:999px; border:2px solid var(--sky-deep);
+  background:white; font-family:inherit; font-weight:600; color:var(--ink); font-size:.95rem;
+}
 .choice-pill{
   background:white; border:2px solid var(--sky-deep); border-radius:999px;
   padding:9px 16px; font-weight:600; color:var(--plum); font-size:.92rem;
@@ -392,6 +399,7 @@ button{font-family:inherit; cursor:pointer;}
 .platform-btn.spotify-btn{border-color:#1DB954; color:#158a3d;}
 .platform-btn.spotify-btn:hover{background:#e9fbf0;}
 .platform-btn.disabled{opacity:.55; cursor:not-allowed;}
+.platform-btn.platform-pick:hover{background:var(--pink-soft); border-color:var(--pink-deep);}
 .spotify-results{display:flex; flex-direction:column; gap:10px; margin-top:12px;}
 .spotify-track-row{
   display:flex; align-items:center; gap:10px; background:var(--cream);

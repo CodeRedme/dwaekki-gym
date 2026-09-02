@@ -353,21 +353,25 @@ document.getElementById("missedDayBtn").addEventListener("click", ()=>{
 
 /* ---------- Food ---------- */
 let selectedDiet = "veg", selectedRegion = "indian";
+const regionSelectEl = document.getElementById("regionSelect");
+if(regionSelectEl){
+  regionSelectEl.innerHTML = FOOD_REGIONS.map(r => `<option value="${r.id}">${r.label}</option>`).join("");
+  regionSelectEl.value = selectedRegion;
+  regionSelectEl.addEventListener("change", () => { selectedRegion = regionSelectEl.value; });
+}
 document.getElementById("dietChoice").addEventListener("click", e=>{
   const btn = e.target.closest(".choice-pill"); if(!btn) return;
   document.querySelectorAll("#dietChoice .choice-pill").forEach(b=>b.classList.remove("selected"));
   btn.classList.add("selected"); selectedDiet = btn.dataset.diet;
 });
-document.getElementById("regionChoice").addEventListener("click", e=>{
-  const btn = e.target.closest(".choice-pill"); if(!btn) return;
-  document.querySelectorAll("#regionChoice .choice-pill").forEach(b=>b.classList.remove("selected"));
-  btn.classList.add("selected"); selectedRegion = btn.dataset.region;
-});
 document.getElementById("showMealsBtn").addEventListener("click", ()=>{
   const budget = document.getElementById("budgetToggle").checked;
   let meals = (MEALS[selectedRegion] && MEALS[selectedRegion][selectedDiet]) || [];
   if(budget) meals = BUDGET_MEALS;
-  document.getElementById("mealResults").innerHTML = meals.map(m=>`<div class="meal-card"><h4>🍽️</h4><p>${m}</p></div>`).join("") || "<p>Try another combination!</p>";
+  document.getElementById("mealResults").innerHTML = meals.map(m=>{
+    if(typeof m === "string") return `<div class="meal-card"><h4>🍽️ ${m}</h4></div>`;
+    return `<div class="meal-card"><h4>🍽️ ${m.name}</h4><p>${m.note}</p></div>`;
+  }).join("") || "<p>Try another combination!</p>";
   state.meals += meals.length ? 1 : 0;
   if(!state.cuisinesTried.includes(selectedRegion)) state.cuisinesTried.push(selectedRegion);
   saveState(); refreshDashboard();
@@ -655,6 +659,29 @@ if(clearDataBtn){
     localStorage.removeItem(NAME_KEY);
     location.reload();
   });
+}
+
+/* ---------- Find it on your platform (search deep-links, no login needed) ---------- */
+const PLATFORM_SEARCH_URLS = {
+  apple: q => `https://music.apple.com/us/search?term=${encodeURIComponent(q)}`,
+  ytmusic: q => `https://music.youtube.com/search?q=${encodeURIComponent(q)}`,
+  amazon: q => `https://music.amazon.com/search/${encodeURIComponent(q)}`,
+  tidal: q => `https://listen.tidal.com/search?q=${encodeURIComponent(q)}`,
+  qobuz: q => `https://www.qobuz.com/search?q=${encodeURIComponent(q)}`,
+  jiosaavn: q => `https://www.jiosaavn.com/search/${encodeURIComponent(q)}`,
+  gaana: q => `https://gaana.com/search/${encodeURIComponent(q)}`
+};
+document.querySelectorAll(".platform-pick").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const q = document.getElementById("platformSearchInput").value.trim();
+    if(!q){ document.getElementById("platformSearchInput").focus(); return; }
+    const build = PLATFORM_SEARCH_URLS[btn.dataset.platform];
+    if(build) window.open(build(q), "_blank", "noopener");
+  });
+});
+const platformSearchForm = document.getElementById("platformSearchForm");
+if(platformSearchForm){
+  platformSearchForm.addEventListener("submit", e=> e.preventDefault());
 }
 
 /* ---------- Settings dropdown ---------- */

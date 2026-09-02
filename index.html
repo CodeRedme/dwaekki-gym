@@ -254,29 +254,20 @@
 <!-- ============ FOOD ============ -->
 <main id="view-food" class="view">
   <h2>🍚 Food Section</h2>
-  <p class="section-sub">Balanced ≠ restrictive. Food here is about energy, growth and enjoyment — never a diet plan or calorie count.</p>
+  <p class="section-sub">No strict diets here — just balanced, worldwide-STAY meal ideas.</p>
 
-  <div class="step">
-    <h3>Choose your eating style</h3>
-    <div class="choice-row" id="dietChoice">
-      <button class="choice-pill" data-diet="veg">🌱 Veg</button>
-      <button class="choice-pill" data-diet="eggitarian">🥚 Eggitarian</button>
-      <button class="choice-pill" data-diet="nonveg">🍗 Non-Veg</button>
+  <div class="food-controls">
+    <div class="control-block">
+      <label for="regionSelect">Region</label>
+      <select id="regionSelect"></select>
     </div>
-  </div>
-
-  <div class="step">
-    <h3>Choose your region</h3>
-    <div class="choice-row" id="regionChoice">
-      <button class="choice-pill" data-region="indian">🇮🇳 Indian</button>
-      <button class="choice-pill" data-region="korean">🇰🇷 Korean</button>
-      <button class="choice-pill" data-region="japanese">🇯🇵 Japanese</button>
-      <button class="choice-pill" data-region="filipino">🇵🇭 Filipino</button>
-      <button class="choice-pill" data-region="thai">🇹🇭 Thai</button>
-      <button class="choice-pill" data-region="indonesian">🇮🇩 Indonesian</button>
-      <button class="choice-pill" data-region="american">🇺🇸 American</button>
-      <button class="choice-pill" data-region="european">🇪🇺 European</button>
-      <button class="choice-pill" data-region="other">🌎 Other / Mixed</button>
+    <div class="control-block">
+      <label>Diet</label>
+      <div class="choice-row" id="dietChoice">
+        <button class="choice-pill selected" data-diet="veg">Vegetarian</button>
+        <button class="choice-pill" data-diet="eggitarian">Eggetarian</button>
+        <button class="choice-pill" data-diet="nonveg">Non-vegetarian</button>
+      </div>
     </div>
   </div>
 
@@ -384,8 +375,6 @@
     <div class="connect-row">
       <button id="spotifyLoginBtn" class="platform-btn spotify-btn">🟢 Sign in with Spotify</button>
       <button id="spotifyLogoutBtn" class="platform-btn hidden">Disconnect Spotify</button>
-      <button class="platform-btn disabled" disabled title="Apple Music needs a signed developer token from a server — not something a fan-made static app can do safely yet.">🍎 Sign in with Apple Music (coming soon)</button>
-      <button class="platform-btn disabled" disabled title="YouTube Music doesn't offer a public sign-in API for personal playback yet.">▶️ Sign in with YouTube Music (coming soon)</button>
     </div>
 
     <div id="spotifySearchWrap" class="hidden">
@@ -395,6 +384,23 @@
       </form>
       <div id="spotifyResults" class="spotify-results"></div>
       <p class="muted" style="margin-top:8px;">Previews are 30 seconds where Spotify provides one — tap "Open in Spotify" for the full track.</p>
+    </div>
+  </div>
+
+  <div class="card music-connect-card">
+    <h3>🎵 No Spotify? Find it on your platform</h3>
+    <p class="muted">Type a song or artist, then tap wherever you already listen — it opens their search, already logged into your account in your browser.</p>
+    <form id="platformSearchForm" class="pantry-row" style="margin-top:10px;">
+      <input id="platformSearchInput" type="text" placeholder="Search a song or artist…" autocomplete="off" />
+    </form>
+    <div class="connect-row" style="margin-top:10px;">
+      <button class="platform-btn platform-pick" data-platform="apple">🍎 Apple Music</button>
+      <button class="platform-btn platform-pick" data-platform="ytmusic">▶️ YouTube Music</button>
+      <button class="platform-btn platform-pick" data-platform="amazon">🎧 Amazon Music</button>
+      <button class="platform-btn platform-pick" data-platform="tidal">🌊 Tidal</button>
+      <button class="platform-btn platform-pick" data-platform="qobuz">🎼 Qobuz</button>
+      <button class="platform-btn platform-pick" data-platform="jiosaavn">💚 JioSaavn</button>
+      <button class="platform-btn platform-pick" data-platform="gaana">🧡 Gaana</button>
     </div>
   </div>
 
