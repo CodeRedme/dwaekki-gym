@@ -641,6 +641,14 @@ function youtubeIdFromUrl(url){
   }catch(e){ return null; }
   return null;
 }
+function playYoutubeVideoId(videoId, note){
+  const wrap = document.getElementById("musicEmbedWrap");
+  const frame = document.getElementById("musicEmbed");
+  frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  wrap.classList.remove("hidden");
+  document.getElementById("musicNote").textContent = note || "🎧 Playing! Head back to Workout to keep the vibe going.";
+  wrap.scrollIntoView({behavior:"smooth", block:"center"});
+}
 document.getElementById("musicPlayBtn").addEventListener("click", ()=>{
   const val = document.getElementById("musicInput").value.trim();
   const note = document.getElementById("musicNote");

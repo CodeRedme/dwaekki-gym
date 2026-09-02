@@ -11,6 +11,7 @@ const ASSETS = [
   "./ai.js",
   "./games.js",
   "./spotify.js",
+  "./youtube-connect.js",
   "./app.js",
   "./icon-outside-192.png",
   "./icon-outside-512.png",

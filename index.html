@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
 <script src="https://js.puter.com/v2/"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -424,10 +425,22 @@
       <div id="spotifyResults" class="spotify-results"></div>
       <p class="muted" style="margin-top:8px;">Previews are 30 seconds where Spotify provides one — tap "Open in Spotify" for the full track.</p>
     </div>
+
+    <hr class="divider" />
+
+    <p class="muted" id="youtubeStatus">Not connected</p>
+    <div class="connect-row">
+      <button id="youtubeLoginBtn" class="platform-btn youtube-btn">▶️ Sign in with YouTube</button>
+      <button id="youtubeLogoutBtn" class="platform-btn hidden">Disconnect YouTube</button>
+    </div>
+    <div id="youtubeBrowseWrap" class="hidden">
+      <select id="youtubePlaylistSelect" style="margin-top:12px;"></select>
+      <div id="youtubeResults" class="spotify-results" style="margin-top:10px;"></div>
+    </div>
   </div>
 
   <div class="card music-connect-card">
-    <h3>🎵 No Spotify? Find it on your platform</h3>
+    <h3>🎵 No Spotify or YouTube? Find it on your platform</h3>
     <p class="muted">Type a song or artist, then tap wherever you already listen — it opens their search, already logged into your account in your browser.</p>
     <form id="platformSearchForm" class="pantry-row" style="margin-top:10px;">
       <input id="platformSearchInput" type="text" placeholder="Search a song or artist…" autocomplete="off" />
@@ -552,6 +565,7 @@
 <script src="ai.js"></script>
 <script src="games.js"></script>
 <script src="spotify.js"></script>
+<script src="youtube-connect.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

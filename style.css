@@ -398,8 +398,16 @@ button{font-family:inherit; cursor:pointer;}
 }
 .platform-btn.spotify-btn{border-color:#1DB954; color:#158a3d;}
 .platform-btn.spotify-btn:hover{background:#e9fbf0;}
+.platform-btn.youtube-btn{border-color:#FF0000; color:#c40000;}
+.platform-btn.youtube-btn:hover{background:#ffecec;}
 .platform-btn.disabled{opacity:.55; cursor:not-allowed;}
 .platform-btn.platform-pick:hover{background:var(--pink-soft); border-color:var(--pink-deep);}
+#youtubePlaylistSelect{
+  width:100%; padding:10px 14px; border-radius:999px; border:2px solid var(--sky-deep);
+  background:white; font-family:inherit; font-weight:600; color:var(--ink); font-size:.9rem;
+}
+.youtube-track-row{width:100%; text-align:left; border:none; cursor:pointer;}
+.youtube-track-row:hover{background:var(--pink-soft);}
 .spotify-results{display:flex; flex-direction:column; gap:10px; margin-top:12px;}
 .spotify-track-row{
   display:flex; align-items:center; gap:10px; background:var(--cream);
