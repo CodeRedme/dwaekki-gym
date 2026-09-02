@@ -93,7 +93,7 @@
   </section>
 
   <section class="pill-grid">
-    <button class="pill-card" data-nav="workout"><span class="pill-emoji">⏱️</span>How much time do you have?</button>
+    <button class="pill-card" data-nav="time"><span class="pill-emoji">⏱️</span>How much time do you have?</button>
     <button class="pill-card" data-quick-eq="none"><span class="pill-emoji">🧍</span>I have nothing</button>
     <button class="pill-card" data-quick-eq="some"><span class="pill-emoji">🏋️</span>I have equipment</button>
     <button class="pill-card" data-quick-goal="gentle"><span class="pill-emoji">🛌</span>Low-Energy Day</button>
@@ -188,29 +188,68 @@
     <h3 id="workoutTitle"></h3>
     <ol id="workoutList" class="exercise-list"></ol>
     <div class="workout-actions">
-      <button id="completeWorkoutBtn" class="btn-primary">✅ I did this!</button>
+      <button id="startGuidedTimerBtn" class="btn-primary big">▶️ Start Guided Timer</button>
+    </div>
+    <div class="workout-actions">
+      <button id="completeWorkoutBtn" class="btn-ghost">✅ I already did this</button>
       <button id="missedDayBtn" class="btn-ghost">🔄 I missed today</button>
     </div>
     <p id="dwaekkiSays" class="dwaekki-says"></p>
+  </div>
 
-    <div class="timer-box">
-      <h4>⏱️ Workout Timer</h4>
-      <div class="timer-display" id="timerDisplay">00:30</div>
-      <div class="timer-presets">
-        <button data-secs="30">30s</button>
-        <button data-secs="45">45s</button>
-        <button data-secs="60">1 min</button>
-        <button data-secs="120">2 min</button>
-      </div>
+  <div class="card safety-note">🛡️ Stop if something causes real pain. This is general movement guidance, not personal medical advice — see the <button class="linklike" data-nav="safety">Safety Center</button> for the full rules.</div>
+</main>
+
+<!-- ============ HOW MUCH TIME DO YOU HAVE? ============ -->
+<main id="view-time" class="view">
+  <h2>⏱️ How much time do you have?</h2>
+  <p class="section-sub">Dwaekki will size a workout to fit — pick a number below.</p>
+  <div class="choice-row" id="timeChipRow">
+    <button class="time-chip" data-mins="5">5 min</button>
+    <button class="time-chip" data-mins="10">10 min</button>
+    <button class="time-chip" data-mins="15">15 min</button>
+    <button class="time-chip" data-mins="20">20 min</button>
+    <button class="time-chip" data-mins="30">30 min</button>
+  </div>
+  <p class="muted" style="margin-top:14px;">Uses whatever equipment + goal you last picked in the Workout Hub (defaults to bodyweight · general fitness).</p>
+</main>
+
+<!-- ============ GUIDED WORKOUT TIMER ============ -->
+<main id="view-timer" class="view">
+  <div id="timerPreScreen">
+    <h2>🐷 Your Workout</h2>
+    <div class="timer-pre-card">
+      <p id="timerPreSummary" class="muted" style="font-size:.95rem;"></p>
+      <div class="switch-row"><span>🔊 Sound</span><input type="checkbox" id="timerSoundToggle" checked /></div>
+      <div class="switch-row"><span>📳 Vibration</span><input type="checkbox" id="timerVibrationToggle" checked /></div>
+      <button id="timerBeginBtn" class="btn-primary big" style="margin-top:14px;">▶ Start Workout</button>
+    </div>
+  </div>
+
+  <div id="timerActiveScreen" class="hidden">
+    <div class="timer-active-card" id="timerActiveCard">
+      <p class="timer-step-label" id="timerStepLabel"></p>
+      <h2 id="timerExerciseName"></h2>
+      <div class="timer-countdown" id="timerCountdown">00:00</div>
+      <div class="timer-progress-bar"><div id="timerProgressFill" class="timer-progress-fill"></div></div>
+      <p id="timerNextLabel" class="muted"></p>
+      <p id="timerRestMsg" class="dwaekki-says hidden">💗 Sip some water, shake it out — back to it soon.</p>
       <div class="timer-controls">
-        <button id="timerStartBtn" class="btn-primary">▶️ Start</button>
-        <button id="timerPauseBtn" class="btn-ghost">⏸️ Pause</button>
-        <button id="timerResetBtn" class="btn-ghost">🔄 Reset</button>
+        <button id="timerPauseBtn" class="btn-ghost">⏸️</button>
+        <button id="timerSkipBtn" class="btn-ghost">⏭️</button>
+        <button id="timerRestartBtn" class="btn-ghost">🔄</button>
       </div>
     </div>
   </div>
 
-  <div class="card safety-note">🛡️ Stop if something causes real pain. This is general movement guidance, not personal medical advice — see the <button class="linklike" data-nav="safety">Safety Center</button> for the full rules.</div>
+  <div id="timerDoneScreen" class="hidden">
+    <div class="timer-done-card">
+      <h2>🎉 You Did It!</h2>
+      <p class="dwaekki-says">Dwaekki is proud of you. Small movement still counts. ❤️</p>
+      <button id="timerFeedBtn" class="btn-primary big">🐰 Feed Dwaekki</button>
+      <button id="timerBackHomeBtn" class="btn-ghost" style="margin-top:10px;">↩ Back Home</button>
+    </div>
+  </div>
 </main>
 
 <!-- ============ WORKOUT LIBRARY (full browse) ============ -->

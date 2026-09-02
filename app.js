@@ -314,6 +314,7 @@ function updateTodaysMove(){
   }
 }
 
+let currentWorkoutList = [];
 document.getElementById("generateWorkoutBtn").addEventListener("click", ()=>{
   if(!selectedEquipment || !selectedGoal){
     alert("Pick what you have and what you want to do first! 🐷");
@@ -327,6 +328,7 @@ document.getElementById("generateWorkoutBtn").addEventListener("click", ()=>{
   if(selectedAccess.has("seated")){
     list = list.map(x => "Seated version: " + x);
   }
+  currentWorkoutList = list;
   document.getElementById("workoutTitle").textContent = `${cap(selectedGoal)} · ${cap(selectedEquipment)} equipment`;
   document.getElementById("workoutList").innerHTML = list.map(x=>`<li>${x}</li>`).join("");
   document.getElementById("workoutResult").classList.remove("hidden");
@@ -334,7 +336,7 @@ document.getElementById("generateWorkoutBtn").addEventListener("click", ()=>{
 });
 function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 
-document.getElementById("completeWorkoutBtn").addEventListener("click", ()=>{
+function markWorkoutComplete(){
   state.workouts++; state.minutes += 15; state.streak++;
   if(selectedGoal === "mobility" || selectedGoal === "gentle") state.mobility++;
   if(selectedEquipment && !state.eqTypesTried.includes(selectedEquipment)) state.eqTypesTried.push(selectedEquipment);
@@ -343,6 +345,10 @@ document.getElementById("completeWorkoutBtn").addEventListener("click", ()=>{
   state.weekLog[today] = true;
   saveState(); refreshDashboard();
   completeMission("workout");
+}
+
+document.getElementById("completeWorkoutBtn").addEventListener("click", ()=>{
+  markWorkoutComplete();
   document.getElementById("dwaekkiSays").textContent = "🐷 \"You did it! So proud of you, STAY!\" 🎉";
 });
 document.getElementById("missedDayBtn").addEventListener("click", ()=>{
@@ -491,43 +497,139 @@ window.onGamePlayed = function(id, coins){
 };
 window.onGameWon = function(id){ /* reserved for future celebratory hooks */ };
 
-/* ---------- Workout Timer ---------- */
-let timerSeconds = 30, timerRemaining = 30, timerInterval = null;
+/* ---------- Guided Workout Timer (pre → active → done) ---------- */
+const WORK_SECONDS = 40, REST_SECONDS = 15;
+let gtQueue = [], gtIndex = 0, gtPhase = "work", gtRemaining = WORK_SECONDS, gtInterval = null, gtPaused = false;
+let audioCtx = null;
+
 function formatTime(s){
   const m = Math.floor(s/60), sec = s%60;
   return `${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
 }
-function renderTimer(){ document.getElementById("timerDisplay").textContent = formatTime(timerRemaining); }
-document.querySelectorAll(".timer-presets button").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    clearInterval(timerInterval); timerInterval = null;
-    timerSeconds = parseInt(btn.dataset.secs, 10);
-    timerRemaining = timerSeconds;
-    renderTimer();
+function gtBeep(){
+  if(!document.getElementById("timerSoundToggle").checked) return;
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.18);
+  }catch(e){}
+}
+function gtVibrate(pattern){
+  if(document.getElementById("timerVibrationToggle").checked && navigator.vibrate) navigator.vibrate(pattern);
+}
+
+function openGuidedTimer(){
+  if(!currentWorkoutList.length){
+    alert("Build a workout first, then start the timer! 🐷");
+    return;
+  }
+  gtQueue = currentWorkoutList;
+  document.getElementById("timerPreSummary").textContent = `${gtQueue.length} moves · about ${Math.round((gtQueue.length*(WORK_SECONDS+REST_SECONDS))/60)} min`;
+  document.getElementById("timerPreScreen").classList.remove("hidden");
+  document.getElementById("timerActiveScreen").classList.add("hidden");
+  document.getElementById("timerDoneScreen").classList.add("hidden");
+  goTo("timer");
+}
+document.getElementById("startGuidedTimerBtn").addEventListener("click", openGuidedTimer);
+
+function gtRenderActive(){
+  const step = gtQueue[gtIndex];
+  document.getElementById("timerStepLabel").textContent = gtPhase === "work"
+    ? `Move ${gtIndex+1} of ${gtQueue.length}`
+    : "Rest";
+  document.getElementById("timerExerciseName").textContent = gtPhase === "work" ? step : "Catch your breath 💗";
+  document.getElementById("timerCountdown").textContent = formatTime(gtRemaining);
+  const total = gtPhase === "work" ? WORK_SECONDS : REST_SECONDS;
+  document.getElementById("timerProgressFill").style.width = `${100 - (gtRemaining/total)*100}%`;
+  const next = gtQueue[gtIndex+1];
+  document.getElementById("timerNextLabel").textContent = gtPhase === "work"
+    ? (next ? `Up next: ${next}` : "Last move — then a well-earned rest!")
+    : (next ? `Up next: ${next}` : "Almost there!");
+  document.getElementById("timerRestMsg").classList.toggle("hidden", gtPhase !== "rest");
+}
+
+function gtTick(){
+  if(gtPaused) return;
+  gtRemaining--;
+  if(gtRemaining <= 0){
+    gtBeep(); gtVibrate([150]);
+    if(gtPhase === "work"){
+      if(gtIndex >= gtQueue.length - 1){
+        gtFinish();
+        return;
+      }
+      gtPhase = "rest";
+      gtRemaining = REST_SECONDS;
+    } else {
+      gtIndex++;
+      gtPhase = "work";
+      gtRemaining = WORK_SECONDS;
+    }
+  }
+  gtRenderActive();
+}
+
+function gtStart(){
+  gtIndex = 0; gtPhase = "work"; gtRemaining = WORK_SECONDS; gtPaused = false;
+  document.getElementById("timerPreScreen").classList.add("hidden");
+  document.getElementById("timerActiveScreen").classList.remove("hidden");
+  gtRenderActive();
+  clearInterval(gtInterval);
+  gtInterval = setInterval(gtTick, 1000);
+}
+document.getElementById("timerBeginBtn").addEventListener("click", gtStart);
+
+document.getElementById("timerPauseBtn").addEventListener("click", (e)=>{
+  gtPaused = !gtPaused;
+  e.target.textContent = gtPaused ? "▶️" : "⏸️";
+});
+document.getElementById("timerSkipBtn").addEventListener("click", ()=>{
+  gtRemaining = 1;
+  if(!gtPaused) gtTick();
+});
+document.getElementById("timerRestartBtn").addEventListener("click", ()=>{
+  gtIndex = 0; gtPhase = "work"; gtRemaining = WORK_SECONDS; gtPaused = false;
+  document.getElementById("timerPauseBtn").textContent = "⏸️";
+  gtRenderActive();
+});
+
+function gtFinish(){
+  clearInterval(gtInterval); gtInterval = null;
+  document.getElementById("timerActiveScreen").classList.add("hidden");
+  document.getElementById("timerDoneScreen").classList.remove("hidden");
+  gtVibrate([120,80,120,80,200]);
+}
+document.getElementById("timerFeedBtn").addEventListener("click", ()=>{
+  markWorkoutComplete();
+  document.getElementById("timerFeedBtn").disabled = true;
+  document.getElementById("timerFeedBtn").textContent = "🐰 Fed Dwaekki!";
+});
+document.getElementById("timerBackHomeBtn").addEventListener("click", ()=> goTo("home"));
+
+/* ---------- "How much time do you have?" quick picker ---------- */
+document.querySelectorAll(".time-chip").forEach(chip=>{
+  chip.addEventListener("click", ()=>{
+    const mins = parseInt(chip.dataset.mins, 10);
+    const eq = selectedEquipment || "none";
+    const goal = selectedGoal || "general";
+    const pool = (EXERCISES[eq] && EXERCISES[eq][goal]) || (EXERCISES.none && EXERCISES.none.general) || [];
+    const count = Math.max(2, Math.min(pool.length, Math.round(mins / 3)));
+    const list = pool.slice(0, count);
+    selectedEquipment = eq; selectedGoal = goal;
+    currentWorkoutList = list;
+    document.getElementById("workoutTitle").textContent = `${mins}-minute ${cap(goal)} workout`;
+    document.getElementById("workoutList").innerHTML = list.map(x=>`<li>${x}</li>`).join("");
+    document.getElementById("workoutResult").classList.remove("hidden");
+    document.getElementById("dwaekkiSays").textContent = "";
+    goTo("workout");
+    document.getElementById("workoutResult").scrollIntoView({behavior:"smooth", block:"start"});
   });
 });
-document.getElementById("timerStartBtn").addEventListener("click", ()=>{
-  if(timerInterval) return;
-  if(timerRemaining <= 0) timerRemaining = timerSeconds;
-  timerInterval = setInterval(()=>{
-    timerRemaining--;
-    renderTimer();
-    if(timerRemaining <= 0){
-      clearInterval(timerInterval); timerInterval = null;
-      document.getElementById("timerDisplay").textContent = "🐷 Done!";
-      if(navigator.vibrate) navigator.vibrate([200,100,200]);
-    }
-  }, 1000);
-});
-document.getElementById("timerPauseBtn").addEventListener("click", ()=>{
-  clearInterval(timerInterval); timerInterval = null;
-});
-document.getElementById("timerResetBtn").addEventListener("click", ()=>{
-  clearInterval(timerInterval); timerInterval = null;
-  timerRemaining = timerSeconds;
-  renderTimer();
-});
-renderTimer();
 
 /* ---------- Dwaekki Music ---------- */
 function youtubeIdFromUrl(url){

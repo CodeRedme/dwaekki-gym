@@ -441,15 +441,28 @@ button{font-family:inherit; cursor:pointer;}
 .chat-form input{border:none; padding:8px 14px;}
 .chat-form button{border-radius:999px;}
 
-/* ===== Workout timer ===== */
-.timer-box{
-  background:white; border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 20px;
-  margin-top:14px; text-align:center; border:2px solid var(--pink-soft);
+/* ===== "How much time?" chips ===== */
+.time-chip{
+  background:white; border:2px solid var(--sky-deep); border-radius:999px;
+  padding:12px 22px; font-weight:700; color:var(--plum); font-size:1rem;
 }
-.timer-display{font-family:var(--font-display); font-size:2.6rem; color:var(--pink-deep); margin:6px 0;}
-.timer-controls{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:8px;}
-.timer-presets{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:10px;}
-.timer-presets button{background:var(--sky); border:none; border-radius:999px; padding:6px 14px; font-weight:700; color:var(--plum); font-size:.85rem;}
+.time-chip:hover{background:var(--sky);}
+
+/* ===== Guided Workout Timer ===== */
+.timer-pre-card, .timer-active-card, .timer-done-card{
+  background:white; border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 24px;
+  margin-top:14px; text-align:center; border:2px solid var(--pink-soft); max-width:460px; margin-left:auto; margin-right:auto;
+}
+.switch-row{display:flex; justify-content:space-between; align-items:center; padding:10px 4px; border-bottom:1px solid var(--pink-soft); font-weight:600;}
+.switch-row:last-of-type{border-bottom:none;}
+.timer-step-label{text-transform:uppercase; letter-spacing:.06em; font-size:.78rem; font-weight:700; color:var(--pink-deep); margin:0;}
+.timer-active-card h2{margin:6px 0 10px;}
+.timer-countdown{font-family:var(--font-display); font-size:3.2rem; color:var(--pink-deep); margin:6px 0;}
+.timer-progress-bar{background:var(--sky); border-radius:999px; height:10px; overflow:hidden; margin:10px 0;}
+.timer-progress-fill{background:var(--pink-deep); height:100%; width:0%; transition:width 1s linear;}
+.timer-controls{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:14px;}
+.timer-controls button{font-size:1.3rem; width:52px; height:52px; border-radius:50%; padding:0;}
+.timer-done-card .btn-primary.big{margin:14px auto 4px;}
 
 /* ===== Update toast ===== */
 .update-toast{

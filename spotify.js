@@ -149,7 +149,7 @@ async function updateSpotifyUI(){
     loginBtn.classList.add("hidden");
     logoutBtn.classList.remove("hidden");
   } else {
-    statusEl.textContent = SPOTIFY_CLIENT_ID ? "Not connected" : "Sign-in not switched on yet — Dwaekki's dev needs to register the app with Spotify first (a one-time setup step, unrelated to any user's account).";
+    statusEl.textContent = SPOTIFY_CLIENT_ID ? "Not connected" : "🚧 Coming soon!";
     searchWrap.classList.add("hidden");
     loginBtn.classList.remove("hidden");
     logoutBtn.classList.add("hidden");
