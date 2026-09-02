@@ -36,6 +36,7 @@ function goTo(view){
   document.getElementById("view-"+view).classList.add("active");
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.nav===view));
   document.querySelectorAll(".bottom-btn").forEach(b=>b.classList.toggle("active", b.dataset.nav===view));
+  document.querySelectorAll(".desktop-bottom-btn").forEach(b=>b.classList.toggle("active", b.dataset.nav===view));
   window.scrollTo({top:0, behavior:"smooth"});
 }
 document.querySelectorAll("[data-nav]").forEach(btn=>{
@@ -643,6 +644,18 @@ function googleTranslateElementInit(){
   s.async = true;
   document.body.appendChild(s);
 })();
+
+/* ---------- Clear My Data ---------- */
+const clearDataBtn = document.getElementById("clearDataBtn");
+if(clearDataBtn){
+  clearDataBtn.addEventListener("click", ()=>{
+    const sure = confirm("This will erase your name, progress, points, and week planner from this device. This can't be undone. Clear everything?");
+    if(!sure) return;
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(NAME_KEY);
+    location.reload();
+  });
+}
 
 /* ---------- Settings dropdown ---------- */
 (function(){

@@ -35,11 +35,6 @@
   </div>
 
   <nav class="topnav" id="topnav">
-    <button data-nav="home" class="nav-btn active">🏠 Home</button>
-    <button data-nav="workout" class="nav-btn">🏋️ Workout</button>
-    <button data-nav="food" class="nav-btn">🍚 Food</button>
-    <button data-nav="ai" class="nav-btn">🤖 Ask Dwaekki</button>
-    <button data-nav="arcade" class="nav-btn">🎮 Arcade</button>
     <button data-nav="music" class="nav-btn">🎧 Music</button>
     <button data-nav="progress" class="nav-btn">💪 Progress</button>
     <button data-nav="school" class="nav-btn">📚 School</button>
@@ -61,10 +56,24 @@
         <div class="settings-row">
           <button id="installBtn" class="install-btn hidden">⬇️ Install</button>
         </div>
+        <div class="settings-row">
+          <span class="settings-label">🎨 Wallpaper Shop</span>
+          <p class="muted" style="margin:0 0 6px;">Spend your 🪙 Dwaekki Coins on a new background for the whole app.</p>
+          <div class="wallpaper-grid" id="wallpaperGrid"></div>
+        </div>
       </div>
     </div>
   </div>
 </header>
+
+<!-- ============ BOTTOM NAV (desktop / tablet) ============ -->
+<nav class="bottomnav-desktop" id="bottomnavDesktop">
+  <button data-nav="home" class="desktop-bottom-btn active">🏠 Home</button>
+  <button data-nav="workout" class="desktop-bottom-btn">🏋️ Workout</button>
+  <button data-nav="food" class="desktop-bottom-btn">🍚 Food</button>
+  <button data-nav="ai" class="desktop-bottom-btn">🤖 Ask Dwaekki</button>
+  <button data-nav="arcade" class="desktop-bottom-btn">🎮 Arcade</button>
+</nav>
 
 <!-- ============ BOTTOM MOBILE NAV ============ -->
 <nav class="bottomnav" id="bottomnav">
@@ -81,28 +90,6 @@
     <img src="logo.png" alt="Dwaekki Gym logo" class="greet-logo" />
     <h1>Hi <span id="userNameDisplay" class="accent">STAY</span> <span class="wave">👋</span></h1>
     <p class="hero-sub" id="greetSub">Small movement counts. Dwaekki isn't keeping score against you.</p>
-  </section>
-
-  <section class="card missions-card">
-    <h3>🐷 Today's Dwaekki Missions</h3>
-    <p class="muted">Not all are workouts — a rest day still counts. No streak-shaming here.</p>
-    <div id="missionsList"></div>
-    <p id="missionsCount" class="muted" style="margin-top:8px;font-weight:700;"></p>
-  </section>
-
-  <section class="card mood-card">
-    <h3>Dwaekki's Mood</h3>
-    <div id="dwaekkiMood" class="mood-display"></div>
-  </section>
-
-  <section class="card foodbox-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <h3>🍱 Dwaekki's Food Box</h3>
-      <span style="font-size:1.8rem;">🐷</span>
-    </div>
-    <p id="foodBoxHistory" class="muted"></p>
-    <div id="foodShopGrid" class="food-shop-grid"></div>
-    <p id="foodBoxReaction" class="dwaekki-says"></p>
   </section>
 
   <section class="pill-grid">
@@ -122,6 +109,28 @@
     <p>Gentle nudges, no strict targets — everyone's needs vary.</p>
     <label class="hydro-toggle"><input type="checkbox" id="hydrationToggle" /> Turn on gentle reminders (every 90 min while the app is open)</label>
     <p id="hydrationNote" class="muted hidden">💧 Reminders are on — Dwaekki will nudge you gently.</p>
+  </section>
+
+  <section class="card mood-card">
+    <h3>Dwaekki's Mood</h3>
+    <div id="dwaekkiMood" class="mood-display"></div>
+  </section>
+
+  <section class="card missions-card">
+    <h3>🐷 Today's Dwaekki Missions</h3>
+    <p class="muted">Not all are workouts — a rest day still counts. No streak-shaming here.</p>
+    <div id="missionsList"></div>
+    <p id="missionsCount" class="muted" style="margin-top:8px;font-weight:700;"></p>
+  </section>
+
+  <section class="card foodbox-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3>🍱 Dwaekki's Food Box</h3>
+      <span style="font-size:1.8rem;">🐷</span>
+    </div>
+    <p id="foodBoxHistory" class="muted"></p>
+    <div id="foodShopGrid" class="food-shop-grid"></div>
+    <p id="foodBoxReaction" class="dwaekki-says"></p>
   </section>
 </main>
 
@@ -367,9 +376,30 @@
 <!-- ============ MUSIC ============ -->
 <main id="view-music" class="view">
   <h2>🎧 Dwaekki Music</h2>
-  <p class="section-sub">Bring your own workout playlist — paste any YouTube link (a song, mix, or playlist) and it'll play right here while you move.</p>
+  <p class="section-sub">Connect your own music platform, or just paste a YouTube link — either way, keep the beat going while you move.</p>
+
+  <div class="card music-connect-card">
+    <h3>🔗 Connect your music</h3>
+    <p class="muted" id="spotifyStatus">Not connected</p>
+    <div class="connect-row">
+      <button id="spotifyLoginBtn" class="platform-btn spotify-btn">🟢 Sign in with Spotify</button>
+      <button id="spotifyLogoutBtn" class="platform-btn hidden">Disconnect Spotify</button>
+      <button class="platform-btn disabled" disabled title="Apple Music needs a signed developer token from a server — not something a fan-made static app can do safely yet.">🍎 Sign in with Apple Music (coming soon)</button>
+      <button class="platform-btn disabled" disabled title="YouTube Music doesn't offer a public sign-in API for personal playback yet.">▶️ Sign in with YouTube Music (coming soon)</button>
+    </div>
+
+    <div id="spotifySearchWrap" class="hidden">
+      <form id="spotifySearchForm" class="pantry-row" style="margin-top:14px;">
+        <input id="spotifySearchInput" type="text" placeholder="Search a song or artist on Spotify…" autocomplete="off" />
+        <button type="submit" class="btn-primary">Search</button>
+      </form>
+      <div id="spotifyResults" class="spotify-results"></div>
+      <p class="muted" style="margin-top:8px;">Previews are 30 seconds where Spotify provides one — tap "Open in Spotify" for the full track.</p>
+    </div>
+  </div>
 
   <div class="card music-card">
+    <h3>Or paste a link</h3>
     <div class="pantry-row">
       <input id="musicInput" type="text" placeholder="Paste a YouTube link…" autocomplete="off" />
       <button id="musicPlayBtn" class="btn-primary">Play</button>
@@ -414,10 +444,6 @@
 
   <h3>🏆 Achievements</h3>
   <div class="achieve-grid" id="achieveGrid"></div>
-
-  <h3>🎨 Wallpaper Shop</h3>
-  <p class="section-sub">Spend your 🪙 Dwaekki Coins on a new background for the whole app.</p>
-  <div class="wallpaper-grid" id="wallpaperGrid"></div>
 </main>
 
 <!-- ============ SCHOOL ============ -->
@@ -447,6 +473,17 @@
   <div class="card">
     Dwaekki is a fitness helper, not a medical professional. For pain, injury, fainting, breathing problems, disordered eating, or any medical concern — please talk to a parent/guardian, doctor, physiotherapist, or other qualified professional.
   </div>
+
+  <div class="card privacy-card">
+    <h3>🔒 Privacy</h3>
+    <ul class="safety-list">
+      <li>Everything (name, progress, week planner, points) stays on this device.</li>
+      <li>No location, contacts, or personal/health data is collected.</li>
+      <li>Your offline Dwaekki tools (workouts, food ideas, the mission game) run fully on this device.</li>
+      <li>When you use Ask Dwaekki's online AI, your message is sent to the AI service Dwaekki uses (Puter) so it can reply — Dwaekki Gym itself doesn't store that chat history on a server.</li>
+    </ul>
+    <button id="clearDataBtn" class="btn-danger">Clear My Data</button>
+  </div>
 </main>
 
 <footer class="site-footer">
@@ -469,6 +506,7 @@
 <script src="data.js"></script>
 <script src="ai.js"></script>
 <script src="games.js"></script>
+<script src="spotify.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

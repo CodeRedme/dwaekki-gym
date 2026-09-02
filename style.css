@@ -70,12 +70,14 @@ button{font-family:inherit; cursor:pointer;}
 .settings-panel{
   position:absolute; top:46px; right:0; z-index:60;
   background:white; border:2px solid var(--pink-soft); border-radius:var(--radius);
-  box-shadow:var(--shadow); padding:14px; min-width:220px;
+  box-shadow:var(--shadow); padding:14px; width:280px; max-width:88vw;
+  max-height:70vh; overflow-y:auto;
 }
 .settings-panel.hidden{display:none;}
 .settings-panel h4{margin:0 0 10px; color:var(--pink-deep); font-family:var(--font-display);}
 .settings-row{margin-bottom:10px; display:flex; flex-direction:column; gap:6px;}
 .settings-row:last-child{margin-bottom:0;}
+.settings-row + .settings-row{border-top:1px solid var(--pink-soft); padding-top:10px;}
 .settings-label{font-size:.8rem; font-weight:700; color:var(--plum); opacity:.75;}
 .settings-panel .currency-strip{flex-wrap:wrap;}
 .settings-panel .install-btn{width:100%;}
@@ -109,6 +111,12 @@ button{font-family:inherit; cursor:pointer;}
   padding:7px 14px; border-radius:999px; margin-top:8px;
 }
 .linklike{background:none; border:none; color:var(--pink-deep); text-decoration:underline; font-weight:700; padding:0; cursor:pointer;}
+.btn-danger{
+  background:#F8D7DA; color:#8a2e3b; border:2px solid #f0aeb5;
+  padding:10px 20px; border-radius:999px; font-weight:700; margin-top:10px;
+}
+.btn-danger:hover{background:#f4b9c0;}
+.privacy-card ul{margin-bottom:0;}
 
 /* ===== Dashboard ===== */
 .dash-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px; margin-top:26px;}
@@ -204,7 +212,7 @@ button{font-family:inherit; cursor:pointer;}
 .site-footer{text-align:center; padding:24px; color:#7a6a7c; font-size:.85rem;}
 
 @media (max-width:640px){
-  .topbar{flex-direction:column; align-items:flex-start;}
+  .topbar{flex-direction:row; align-items:center; justify-content:space-between; flex-wrap:nowrap;}
   .topnav{width:100%; justify-content:flex-start;}
   .hero h1{font-size:1.5rem;}
 }
@@ -330,6 +338,7 @@ button{font-family:inherit; cursor:pointer;}
 .bottomnav{display:none;}
 @media (max-width:760px){
   .topnav{display:none;}
+  .bottomnav-desktop{display:none !important;}
   .bottomnav{
     display:flex; justify-content:space-around; align-items:center;
     position:fixed; bottom:0; left:0; right:0; z-index:100;
@@ -347,12 +356,52 @@ button{font-family:inherit; cursor:pointer;}
   .topbar{padding:10px 14px;}
 }
 
+/* ===== Bottom nav (desktop / tablet) ===== */
+.bottomnav-desktop{display:none;}
+@media (min-width:761px){
+  .bottomnav-desktop{
+    display:flex; justify-content:center; align-items:center; gap:8px;
+    position:fixed; bottom:0; left:0; right:0; z-index:100;
+    background:rgba(255,249,244,0.95); backdrop-filter:blur(6px);
+    border-top:3px solid var(--pink-soft);
+    padding:10px 14px;
+    box-shadow:0 -6px 18px rgba(74,37,69,0.08);
+  }
+  .desktop-bottom-btn{
+    background:transparent; border:2px solid transparent; border-radius:999px;
+    padding:8px 18px; font-weight:600; color:var(--plum); font-size:.95rem;
+  }
+  .desktop-bottom-btn:hover{background:var(--pink-soft);}
+  .desktop-bottom-btn.active{background:var(--pink); color:white; border-color:var(--pink-deep);}
+  body{padding-bottom:64px;}
+}
+
 /* ===== Music view ===== */
 .music-card{margin-top:6px;}
 .music-embed-wrap{
   position:relative; width:100%; padding-top:56.25%; margin-top:14px; border-radius:var(--radius-sm); overflow:hidden;
 }
 .music-embed-wrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
+
+.music-connect-card{margin-top:18px;}
+.connect-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;}
+.platform-btn{
+  border-radius:999px; padding:10px 16px; font-weight:700; font-size:.9rem;
+  border:2px solid var(--sky-deep); background:white; color:var(--plum);
+}
+.platform-btn.spotify-btn{border-color:#1DB954; color:#158a3d;}
+.platform-btn.spotify-btn:hover{background:#e9fbf0;}
+.platform-btn.disabled{opacity:.55; cursor:not-allowed;}
+.spotify-results{display:flex; flex-direction:column; gap:10px; margin-top:12px;}
+.spotify-track-row{
+  display:flex; align-items:center; gap:10px; background:var(--cream);
+  border-radius:var(--radius-sm); padding:8px 10px; flex-wrap:wrap;
+}
+.spotify-track-art{width:44px; height:44px; border-radius:8px; object-fit:cover;}
+.spotify-track-info{flex:1; min-width:120px;}
+.spotify-track-name{font-weight:700; font-size:.92rem;}
+.spotify-track-artist{font-size:.78rem;}
+.spotify-track-row audio{height:32px; max-width:180px;}
 
 /* ===== Prettier Arcade ===== */
 .arcade-grid{
