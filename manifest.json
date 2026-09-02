@@ -1,31 +1,15 @@
 {
   "name": "Dwaekki Gym",
   "short_name": "Dwaekki Gym",
-  "description": "A free, no-pressure home workout + balanced meal companion for STAYs everywhere.",
+  "description": "Free home workouts, balanced food ideas, and a cozy arcade — built for STAYs everywhere.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#fdf3f6",
-  "theme_color": "#f7c9d9",
-  "orientation": "portrait",
+  "background_color": "#FFF9F4",
+  "theme_color": "#FF8FAB",
+  "orientation": "portrait-primary",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "icon-outside-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-outside-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

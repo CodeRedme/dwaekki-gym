@@ -2,355 +2,473 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Dwaekki Gym 🐷🏋️‍♀️</title>
-<meta name="description" content="A free, no-pressure home workout + balanced meal companion for STAYs everywhere." />
-<meta name="theme-color" content="#f7c9d9" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Dwaekki Gym 🐷🏋️</title>
+<meta name="description" content="A free, no-pressure home workout + balanced food + mini-game world for STAYs everywhere." />
+<meta name="theme-color" content="#FF8FAB" />
 <link rel="manifest" href="manifest.json" />
-<link rel="icon" href="icon-192.png" />
-<link rel="apple-touch-icon" href="icon-180.png" />
+<link rel="icon" href="icon-outside-192.png" />
+<link rel="apple-touch-icon" href="icon-outside-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
+<script src="https://js.puter.com/v2/"></script>
 </head>
 <body>
 
-<!-- ===== NAME GATE (first visit) ===== -->
-<div id="nameGate" class="name-gate">
-  <div class="name-card">
-    <img src="icon-192.png" alt="Dwaekki Gym" class="gate-logo" />
-    <h1>Dwaekki Gym</h1>
-    <p class="gate-tag" data-en="No equipment, no money, no pressure — just Dwaekki, cheering you on." data-hi="Koi equipment nahi, koi paisa nahi, koi pressure nahi — bas Dwaekki, tumhe cheer karte hue.">No equipment, no money, no pressure — just Dwaekki, cheering you on.</p>
-    <label for="nameInput" data-en="What should Dwaekki call you?" data-hi="Dwaekki tumhe kya bulaye?">What should Dwaekki call you?</label>
-    <input type="text" id="nameInput" maxlength="20" placeholder="e.g. Han-nie" />
-    <button id="nameSubmit" class="btn-primary" data-en="Let's go!" data-hi="Chalo shuru karein!">Let's go!</button>
-    <p class="gate-note" data-en="We only save this on your device. Nothing is sent anywhere." data-hi="Yeh sirf tumhare device par save hota hai. Kahin bheja nahi jaata.">We only save this on your device. Nothing is sent anywhere.</p>
+<!-- ============ NAME ONBOARDING MODAL ============ -->
+<div id="nameModal" class="name-modal hidden">
+  <div class="name-modal-card">
+    <img src="logo.png" class="name-modal-logo" alt="Dwaekki Gym logo" />
+    <h2>Hi STAY! What should Dwaekki call you? 🐷</h2>
+    <p class="muted">Just for a friendly hello — nothing is uploaded anywhere.</p>
+    <input id="nameInput" type="text" placeholder="Your name" maxlength="24" autocomplete="off" />
+    <button id="nameSubmitBtn" class="btn-primary big">Let's go →</button>
   </div>
 </div>
 
-<!-- ===== APP SHELL ===== -->
-<div id="app" class="app hidden">
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="brand">
+    <img src="icon-inside.png" alt="" class="brand-icon" />
+    <span class="brand-name">Dwaekki Gym</span>
+  </div>
 
-  <header class="topbar">
-    <div class="brand">
-      <img src="icon-192.png" alt="" class="brand-logo" />
-      <span>Dwaekki Gym</span>
-    </div>
-    <div class="topbar-actions">
-      <button id="langToggle" class="pill-btn" title="Language / भाषा">EN / हिं</button>
-      <div id="google_translate_element" class="gt-widget" title="More languages"></div>
-    </div>
-  </header>
-
-  <main id="views">
-
-    <!-- ---------- HOME ---------- -->
-    <section id="view-home" class="view active">
-      <div class="hero-card">
-        <img src="icon-192.png" class="hero-dwaekki" alt="Dwaekki" />
-        <h2><span id="greetName">Hi there</span> <span class="wave">👋</span></h2>
-        <p id="homeMissedNote" class="soft-note hidden"></p>
-        <p class="hero-quote" data-en="Small movement counts. Dwaekki isn't keeping score against you." data-hi="Chhoti movement bhi maayne rakhti hai. Dwaekki tumhare against score nahi rakhta.">Small movement counts. Dwaekki isn't keeping score against you.</p>
-      </div>
-
-      <div class="quick-grid">
-        <button class="quick-tile" data-nav="time" data-en="⏱️ How much time do you have?" data-hi="⏱️ Tumhare paas kitna time hai?">⏱️ How much time do you have?</button>
-        <button class="quick-tile" data-nav="nothing" data-en="🧍 I have nothing" data-hi="🧍 Mere paas kuch nahi hai">🧍 I have nothing</button>
-        <button class="quick-tile" data-nav="equipment" data-en="🏋️ I have equipment" data-hi="🏋️ Mere paas equipment hai">🏋️ I have equipment</button>
-        <button class="quick-tile" data-nav="lowenergy" data-en="🛏️ Low-Energy Day" data-hi="🛏️ Low-Energy Day">🛏️ Low-Energy Day</button>
-        <button class="quick-tile" data-nav="ai" data-en="🤖 Ask Dwaekki" data-hi="🤖 Dwaekki se poocho">🤖 Ask Dwaekki</button>
-        <button class="quick-tile" data-nav="food" data-en="🍚 Build a meal" data-hi="🍚 Meal banao">🍚 Build a meal</button>
-        <button class="quick-tile" data-nav="week" data-en="📅 My Week" data-hi="📅 Meri Week">📅 My Week</button>
-        <button class="quick-tile" data-nav="game" data-en="🎮 Dwaekki Play" data-hi="🎮 Dwaekki Play">🎮 Dwaekki Play</button>
-        <button class="quick-tile" data-nav="music" data-en="🎧 Dwaekki Music" data-hi="🎧 Dwaekki Music">🎧 Dwaekki Music</button>
-      </div>
-
-      <div class="hydration-card">
-        <h3 data-en="💧 Hydration Reminders" data-hi="💧 Paani peene ke reminders">💧 Hydration Reminders</h3>
-        <p class="soft-note" data-en="Gentle nudges, no strict targets — everyone's needs vary." data-hi="Halke nudges, koi strict target nahi — sabki zaroorat alag hoti hai.">Gentle nudges, no strict targets — everyone's needs vary.</p>
-        <label class="switch-row">
-          <span data-en="Turn on reminders" data-hi="Reminders on karo">Turn on reminders</span>
-          <input type="checkbox" id="hydrationToggle" />
-        </label>
-        <div id="hydrationSettings" class="hydration-settings hidden">
-          <label class="control-block" style="margin-top:10px;">
-            <span data-en="Remind me every" data-hi="Har">Remind me every</span>
-            <select id="hydrationInterval">
-              <option value="30">30 min</option>
-              <option value="45" selected>45 min</option>
-              <option value="60">60 min</option>
-              <option value="90">90 min</option>
-            </select>
-          </label>
-        </div>
-        <p class="reliability-note" data-en="🟢 App open: reliable. 🟡 App backgrounded: works on most phones/browsers. 🔵 App fully closed: not guaranteed — that needs a background push server we don't have (yet!)." data-hi="🟢 App khula: reliable. 🟡 App background mein: zyada phones/browsers par kaam karta hai. 🔵 App poori tarah band: guarantee nahi — uske liye background push server chahiye (abhi nahi hai!).">🟢 App open: reliable. 🟡 App backgrounded: works on most phones/browsers. 🔵 App fully closed: not guaranteed — that needs a background push server we don't have (yet!).</p>
-      </div>
-    </section>
-
-    <!-- ---------- TIME FINDER ---------- -->
-    <section id="view-time" class="view">
-      <h2 data-en="⏱️ How much time do you have?" data-hi="⏱️ Tumhare paas kitna time hai?">⏱️ How much time do you have?</h2>
-      <p class="soft-note" data-en="Dwaekki will find a workout for you." data-hi="Dwaekki tumhare liye workout dhoondega.">Dwaekki will find a workout for you.</p>
-      <div class="time-chip-row">
-        <button class="time-chip" data-mins="5">5 min</button>
-        <button class="time-chip" data-mins="10">10 min</button>
-        <button class="time-chip" data-mins="15">15 min</button>
-        <button class="time-chip" data-mins="20">20 min</button>
-        <button class="time-chip" data-mins="30">30 min</button>
-      </div>
-      <div id="timeResult" class="result-panel"></div>
-    </section>
-
-    <!-- ---------- I HAVE NOTHING ---------- -->
-    <section id="view-nothing" class="view">
-      <h2 data-en="🧍 I have Nothing" data-hi="🧍 Mere paas kuch nahi">🧍 I have Nothing</h2>
-      <p class="soft-note" data-en="Bodyweight-only moves, safe in a small stable space. No equipment, no gym, no problem." data-hi="Sirf bodyweight moves, chhoti stable jagah mein safe. Na equipment, na gym, koi tension nahi.">Bodyweight-only moves, safe in a small stable space. No equipment, no gym, no problem.</p>
-      <div class="safety-banner"></div>
-      <div class="filter-row" id="nothingGoalFilter"></div>
-      <div id="nothingList" class="exercise-list"></div>
-    </section>
-
-    <!-- ---------- LOW-ENERGY DAY ---------- -->
-    <section id="view-lowenergy" class="view">
-      <h2 data-en="🛏️ Low-Energy Day" data-hi="🛏️ Low-Energy Day">🛏️ Low-Energy Day</h2>
-      <p id="lowEnergyMessage" class="hero-quote" style="margin-bottom:16px;"></p>
-      <div class="safety-banner"></div>
-      <div id="lowEnergyList" class="exercise-list"></div>
-    </section>
-
-    <!-- ---------- I HAVE EQUIPMENT ---------- -->
-    <section id="view-equipment" class="view">
-      <h2 data-en="🏋️ I have Equipment" data-hi="🏋️ Mere paas Equipment hai">🏋️ I have Equipment</h2>
-      <p class="soft-note" data-en="Tick what you've got. Dwaekki filters the library for you." data-hi="Jo tumhare paas hai woh tick karo. Dwaekki tumhare liye library filter karega.">Tick what you've got. Dwaekki filters the library for you.</p>
-      <div class="safety-banner"></div>
-      <div id="equipmentTicks" class="tick-grid"></div>
-      <div class="filter-row" id="equipmentGoalFilter"></div>
-      <div id="equipmentList" class="exercise-list"></div>
-    </section>
-
-    <!-- ---------- WORKOUT LIBRARY (full browse) ---------- -->
-    <section id="view-library" class="view">
-      <h2 data-en="📚 Workout Library" data-hi="📚 Workout Library">📚 Workout Library</h2>
-      <div class="safety-banner"></div>
-      <p class="filter-label" data-en="Goal" data-hi="Goal">Goal</p>
-      <div class="filter-row" id="libraryGoalFilter"></div>
-      <p class="filter-label" data-en="Body part" data-hi="Body part">Body part</p>
-      <div class="filter-row" id="libraryBodyFilter"></div>
-      <div id="libraryList" class="exercise-list"></div>
-    </section>
-
-    <!-- ---------- FOOD ---------- -->
-    <section id="view-food" class="view">
-      <h2 data-en="🍚 Food Section" data-hi="🍚 Khana Section">🍚 Food Section</h2>
-      <p class="soft-note" data-en="No strict diets here — just balanced, worldwide-STAY meal ideas." data-hi="Yahan koi strict diet nahi — bas balanced, poori duniya ke STAYs ke liye meal ideas.">No strict diets here — just balanced, worldwide-STAY meal ideas.</p>
-
-      <div class="food-controls">
-        <div class="control-block">
-          <label data-en="Region" data-hi="Region">Region</label>
-          <select id="regionSelect"></select>
-        </div>
-        <div class="control-block">
-          <label data-en="Diet" data-hi="Diet">Diet</label>
-          <div class="diet-toggle" id="dietToggle"></div>
-        </div>
-      </div>
-
-      <div id="mealIdeas" class="meal-grid"></div>
-
-      <div class="builder-card">
-        <h3 data-en="🐷 Use What I Already Have" data-hi="🐷 Jo Mere Paas Hai Woh Use Karo">🐷 Use What I Already Have</h3>
-        <p class="soft-note" data-en="Type what's in your kitchen, comma-separated. No grocery run required." data-hi="Kitchen mein jo hai woh type karo, comma se alag karke. Koi grocery run zaroori nahi.">Type what's in your kitchen, comma-separated. No grocery run required.</p>
-        <div class="ingredient-input-row">
-          <input type="text" id="ingredientInput" data-en-ph="e.g. rice, eggs, onion, tomato" data-hi-ph="jaise: rice, eggs, onion, tomato" placeholder="e.g. rice, eggs, onion, tomato" />
-          <button id="ingredientBtn" class="btn-secondary" data-en="Find dishes" data-hi="Dishes dhoondo">Find dishes</button>
-        </div>
-        <div id="ingredientResult" class="result-panel hidden"></div>
-      </div>
-
-      <div class="builder-card">
-        <h3 data-en="🛠️ Build-a-Meal" data-hi="🛠️ Apna Meal Banao">🛠️ Build-a-Meal</h3>
-        <p class="soft-note" data-en="Dwaekki says: pick one from each." data-hi="Dwaekki kehta hai: har ek se ek chuno.">Dwaekki says: pick one from each.</p>
-        <div id="mealBuilder"></div>
-        <div id="mealBuilderResult" class="result-panel hidden"></div>
-      </div>
-    </section>
-
-    <!-- ---------- ASK DWAEKKI (AI) ---------- -->
-    <section id="view-ai" class="view">
-      <h2 data-en="🤖 Ask Dwaekki" data-hi="🤖 Dwaekki se poocho">🤖 Ask Dwaekki</h2>
-      <p class="soft-note" data-en="A small wellness buddy — not a doctor or dietitian. Uses a real AI when you're online (first time, a quick free sign-in popup may appear); otherwise falls back to its own offline brain." data-hi="Ek chhota wellness dost — doctor ya dietitian nahi. Jab online ho toh real AI use karta hai (pehli baar, ek chhota free sign-in popup aa sakta hai); warna apne offline brain par chalta hai.">A small wellness buddy — not a doctor or dietitian. Uses a real AI when you're online (first time, a quick free sign-in popup may appear); otherwise falls back to its own offline brain.</p>
-      <div class="ai-disclaimer-chip" data-en="Dwaekki AI is a wellness assistant with a built-in knowledge base. It isn't a doctor, dietitian, or trainer." data-hi="Dwaekki AI ek wellness assistant hai jiska apna built-in knowledge base hai. Yeh doctor, dietitian, ya trainer nahi hai.">Dwaekki AI is a wellness assistant with a built-in knowledge base. It isn't a doctor, dietitian, or trainer.</div>
-      <div id="chatWindow" class="chat-window"></div>
-      <div class="chat-suggestions" id="chatSuggestions"></div>
-      <form id="chatForm" class="chat-form">
-        <input type="text" id="chatInput" data-en-ph="Ask Dwaekki anything..." data-hi-ph="Dwaekki se kuch bhi poocho..." placeholder="Ask Dwaekki anything..." autocomplete="off" />
-        <button type="submit" class="btn-primary">➤</button>
-      </form>
-    </section>
-
-    <!-- ---------- MY WEEK ---------- -->
-    <section id="view-week" class="view">
-      <h2 data-en="📅 My Week" data-hi="📅 Meri Week">📅 My Week</h2>
-      <p class="soft-note" data-en="A simple planner. Missing a day never resets anything." data-hi="Ek simple planner. Ek din miss karne se kuch bhi reset nahi hota.">A simple planner. Missing a day never resets anything.</p>
-      <div id="weekGrid" class="week-grid"></div>
-      <p id="weekMessage" class="soft-note"></p>
-    </section>
-
-    <!-- ---------- ABOUT / SAFETY ---------- -->
-    <section id="view-about" class="view">
-      <h2 data-en="🛟 Safety Center" data-hi="🛟 Safety Center">🛟 Safety Center</h2>
-      <div class="disclaimer-box">
-        <p data-en="Dwaekki Gym is for general wellness and education. It isn't a replacement for a doctor, physiotherapist, dietitian, or qualified trainer." data-hi="Dwaekki Gym general wellness aur education ke liye hai. Yeh doctor, physiotherapist, dietitian, ya qualified trainer ka replacement nahi hai.">Dwaekki Gym is for general wellness and education. It isn't a replacement for a doctor, physiotherapist, dietitian, or qualified trainer.</p>
-        <p data-en="Go slow, use proper form, and stop immediately if something hurts or you feel unwell." data-hi="Dhire shuru karo, sahi form use karo, aur agar kuch dukhe ya tabiyat theek na lage toh turant ruk jao.">Go slow, use proper form, and stop immediately if something hurts or you feel unwell.</p>
-        <p data-en="For pain, injury, fainting, breathing problems, eating concerns, or any medical issue — please talk to a qualified healthcare professional." data-hi="Dard, chot, behosh hona, saans ki problem, khaane se juda concern, ya koi bhi medical issue ho toh — please ek qualified healthcare professional se baat karo.">For pain, injury, fainting, breathing problems, eating concerns, or any medical issue — please talk to a qualified healthcare professional.</p>
-      </div>
-
-      <div class="privacy-box">
-        <h3 data-en="🔒 Privacy" data-hi="🔒 Privacy">🔒 Privacy</h3>
-        <ul>
-          <li data-en="Everything (name, progress, week planner, points) stays on this device." data-hi="Sab kuch (naam, progress, week planner, points) is device par hi rehta hai.">Everything (name, progress, week planner, points) stays on this device.</li>
-          <li data-en="No location, contacts, or personal/health data is collected." data-hi="Koi location, contacts, ya personal/health data collect nahi hota.">No location, contacts, or personal/health data is collected.</li>
-          <li data-en="Your offline Dwaekki tools (workouts, food ideas, the mission game) run fully on this device." data-hi="Tumhare offline Dwaekki tools (workouts, food ideas, mission game) poori tarah is device par chalte hain.">Your offline Dwaekki tools (workouts, food ideas, the mission game) run fully on this device.</li>
-          <li data-en="When you use Ask Dwaekki's online AI, your message is sent to the AI service Dwaekki uses (Puter) so it can reply — Dwaekki Gym itself doesn't store that chat history on a server." data-hi="Jab tum Ask Dwaekki ka online AI use karte ho, tumhara message us AI service (Puter) ko bheja jaata hai jo Dwaekki use karta hai, taaki woh reply de sake — Dwaekki Gym khud us chat history ko kisi server par store nahi karta.">When you use Ask Dwaekki's online AI, your message is sent to the AI service Dwaekki uses (Puter) so it can reply — Dwaekki Gym itself doesn't store that chat history on a server.</li>
-        </ul>
-        <button id="clearDataBtn" class="btn-danger" data-en="Clear My Data" data-hi="Mera Data Clear Karo">Clear My Data</button>
-      </div>
-
-      <div class="credit-box">
-        <p data-en="Dwaekki Gym created by Tulika Soni ♡ × STAY Project" data-hi="Dwaekki Gym banaya gaya Tulika Soni ♡ × STAY Project dwara">Dwaekki Gym created by Tulika Soni ♡ × STAY Project</p>
-        <p class="tiny-note">Copyright © — Original fan-made project. Not affiliated with JYP Entertainment.</p>
-        <p class="tiny-note" id="versionLabel"></p>
-      </div>
-    </section>
-
-    <!-- ---------- GUIDED WORKOUT TIMER ---------- -->
-    <section id="view-timer" class="view">
-      <div id="timerPreScreen">
-        <h2 data-en="🐷 Your Workout" data-hi="🐷 Tumhara Workout">🐷 Your Workout</h2>
-        <div class="timer-pre-card">
-          <p id="timerPreSummary" class="soft-note" style="font-size:0.95rem;"></p>
-          <div class="switch-row"><span data-en="🔊 Sound" data-hi="🔊 Sound">🔊 Sound</span><input type="checkbox" id="timerSoundToggle" checked /></div>
-          <div class="switch-row"><span data-en="📳 Vibration" data-hi="📳 Vibration">📳 Vibration</span><input type="checkbox" id="timerVibrationToggle" checked /></div>
-          <button id="timerStartBtn" class="btn-primary" style="margin-top:14px;" data-en="▶ Start Workout" data-hi="▶ Workout Shuru Karo">▶ Start Workout</button>
-        </div>
-      </div>
-
-      <div id="timerActiveScreen" class="hidden">
-        <div class="timer-active-card" id="timerActiveCard">
-          <p class="timer-step-label" id="timerStepLabel"></p>
-          <h2 id="timerExerciseName"></h2>
-          <div class="timer-countdown" id="timerCountdown">00:00</div>
-          <div class="timer-progress-bar"><div id="timerProgressFill" class="timer-progress-fill"></div></div>
-          <p id="timerNextLabel" class="soft-note"></p>
-          <p id="timerRestMsg" class="rest-msg hidden"></p>
-          <div class="timer-controls">
-            <button id="timerPauseBtn" class="btn-secondary">⏸</button>
-            <button id="timerSkipBtn" class="btn-secondary">⏭</button>
-            <button id="timerRestartBtn" class="btn-secondary">🔄</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="timerDoneScreen" class="hidden">
-        <div class="timer-done-card">
-          <h2 data-en="🎉 You Did It!" data-hi="🎉 Tumne Kar Diya!">🎉 You Did It!</h2>
-          <p class="hero-quote" data-en="Dwaekki is proud of you. Small movement still counts. ❤️" data-hi="Dwaekki ko tum par garv hai. Chhoti movement bhi maayne rakhti hai. ❤️">Dwaekki is proud of you. Small movement still counts. ❤️</p>
-          <button id="timerFeedBtn" class="btn-primary" data-en="🐰 Feed Dwaekki" data-hi="🐰 Dwaekki Ko Khilao">🐰 Feed Dwaekki</button>
-          <button id="timerBackHomeBtn" class="btn-secondary" style="margin-top:10px;" data-en="↩ Back Home" data-hi="↩ Ghar Wapas">↩ Back Home</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- ---------- DWAEKKI MUSIC ---------- -->
-    <section id="view-music" class="view">
-      <h2 data-en="🎧 Dwaekki Music" data-hi="🎧 Dwaekki Music">🎧 Dwaekki Music</h2>
-      <p class="hero-quote" style="margin-bottom:16px;" data-en="Dwaekki doesn't choose your music. You do. 🐷❤️" data-hi="Dwaekki tumhara music nahi chunta. Tum chunte ho. 🐷❤️">Dwaekki doesn't choose your music. You do. 🐷❤️</p>
-
-      <div class="music-links">
-        <a href="https://open.spotify.com" target="_blank" rel="noopener" class="music-link-btn">🎵 Spotify</a>
-        <a href="https://music.youtube.com" target="_blank" rel="noopener" class="music-link-btn">▶️ YouTube Music</a>
-        <a href="https://music.apple.com" target="_blank" rel="noopener" class="music-link-btn">🍎 Apple Music</a>
-      </div>
-      <p class="soft-note" data-en="These open in a new tab — keep it playing there while your workout timer runs here." data-hi="Yeh naye tab mein khulte hain — waha music chalte rehne do jab yaha workout timer chale.">These open in a new tab — keep it playing there while your workout timer runs here.</p>
-
-      <div class="builder-card">
-        <h3 data-en="🎵 Or play a song from your device" data-hi="🎵 Ya apne device se ek gaana chalao">🎵 Or play a song from your device</h3>
-        <p class="soft-note" data-en="Nothing is uploaded — it plays straight from your file, privately." data-hi="Kuch upload nahi hota — seedha tumhari file se, privately play hota hai.">Nothing is uploaded — it plays straight from your file, privately.</p>
-        <input type="file" id="localAudioInput" accept="audio/*" />
-        <audio id="localAudioPlayer" controls class="hidden" style="width:100%;margin-top:10px;"></audio>
-      </div>
-    </section>
-
-    <!-- ---------- DWAEKKI PLAY (gym scene + missions + food box + Dwaekki Dash) ---------- -->
-    <section id="view-game" class="view">
-      <h2 data-en="🎮 Dwaekki Play" data-hi="🎮 Dwaekki Play">🎮 Dwaekki Play</h2>
-      <p class="soft-note" data-en="A little gym scene, your daily missions, and Dwaekki's food box — all in one place." data-hi="Ek chhoti gym scene, tumhare daily missions, aur Dwaekki ka food box — sab ek hi jagah.">A little gym scene, your daily missions, and Dwaekki's food box — all in one place.</p>
-
-      <div class="gym-scene">
-        <div class="gym-character" style="animation-delay:0s;">🐰🐷</div>
-        <div class="gym-character" style="animation-delay:0.15s;">🐰</div>
-        <div class="gym-character" style="animation-delay:0.3s;">🐺</div>
-        <div class="gym-character" style="animation-delay:0.45s;">🥟</div>
-        <div class="gym-character" style="animation-delay:0.6s;">🐿️</div>
-        <div class="gym-character" style="animation-delay:0.75s;">🐥</div>
-        <div class="gym-character" style="animation-delay:0.9s;">🐶</div>
-        <div class="gym-character" style="animation-delay:1.05s;">🦊</div>
-      </div>
-      <p class="soft-note" style="text-align:center;font-style:italic;" data-en="A little fan-made tribute, doing gym moves alongside you. 💗" data-hi="Ek chhota fan-made tribute, tumhare saath gym moves karte hue. 💗">A little fan-made tribute, doing gym moves alongside you. 💗</p>
-
-      <div class="mission-card">
-        <h3 data-en="🐷 Dwaekki's Little Day" data-hi="🐷 Dwaekki Ka Little Day">🐷 Dwaekki's Little Day</h3>
-        <p class="soft-note" data-en="Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki." data-hi="Chhote wellbeing missions — sirf exercise nahi. Har ek se Dwaekki ke liye ek random food emoji milta hai.">Small wellbeing missions — not just exercise. Each one earns a random food emoji for Dwaekki.</p>
-        <div id="missionChecklist" class="mission-checklist"></div>
-        <p class="points-note"><span id="missionProgress">0/5</span> <span data-en="completed today" data-hi="aaj complete hue">completed today</span></p>
-      </div>
-
-      <div class="foodbox-card">
-        <div class="foodbox-header">
-          <h3 data-en="🍱 Dwaekki's Food Box" data-hi="🍱 Dwaekki Ka Food Box">🍱 Dwaekki's Food Box</h3>
-          <span id="dwaekkiMoodEmoji" class="dwaekki-mood">🐷</span>
-        </div>
-        <div id="foodBoxGrid" class="foodbox-grid"></div>
-        <button id="feedDwaekkiBtn" class="btn-secondary" data-en="🐰 Feed Dwaekki" data-hi="🐰 Dwaekki Ko Khilao">🐰 Feed Dwaekki</button>
-        <p id="feedMsg" class="soft-note"></p>
-      </div>
-    </section>
-
-  </main>
-
-  <nav class="tabbar">
-    <button class="tab-btn active" data-nav="home"><span>🏠</span><small data-en="Home" data-hi="Home">Home</small></button>
-    <button class="tab-btn" data-nav="library"><span>📚</span><small data-en="Library" data-hi="Library">Library</small></button>
-    <button class="tab-btn" data-nav="food"><span>🍚</span><small data-en="Food" data-hi="Food">Food</small></button>
-    <button class="tab-btn" data-nav="ai"><span>🤖</span><small data-en="Dwaekki" data-hi="Dwaekki">Dwaekki</small></button>
-    <button class="tab-btn" data-nav="about"><span>🛟</span><small data-en="Safety" data-hi="Safety">Safety</small></button>
+  <nav class="topnav" id="topnav">
+    <button data-nav="home" class="nav-btn active">🏠 Home</button>
+    <button data-nav="workout" class="nav-btn">🏋️ Workout</button>
+    <button data-nav="food" class="nav-btn">🍚 Food</button>
+    <button data-nav="ai" class="nav-btn">🤖 Ask Dwaekki</button>
+    <button data-nav="arcade" class="nav-btn">🎮 Arcade</button>
+    <button data-nav="music" class="nav-btn">🎧 Music</button>
+    <button data-nav="progress" class="nav-btn">💪 Progress</button>
+    <button data-nav="school" class="nav-btn">📚 School</button>
+    <button data-nav="safety" class="nav-btn">🛡️ Safety</button>
   </nav>
+
+  <div class="topbar-actions">
+    <div class="settings-wrap">
+      <button id="settingsBtn" class="settings-btn" aria-haspopup="true" aria-expanded="false">⚙️</button>
+      <div id="settingsPanel" class="settings-panel hidden">
+        <h4>⚙️ Settings</h4>
+        <div class="settings-row">
+          <div id="currencyStrip" class="currency-strip"></div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Select Language</span>
+          <div id="google_translate_element" class="translate-slot"></div>
+        </div>
+        <div class="settings-row">
+          <button id="installBtn" class="install-btn hidden">⬇️ Install</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ BOTTOM MOBILE NAV ============ -->
+<nav class="bottomnav" id="bottomnav">
+  <button data-nav="home" class="bottom-btn active"><span class="bottom-emoji">🏠</span><span>Home</span></button>
+  <button data-nav="library" class="bottom-btn"><span class="bottom-emoji">📚</span><span>Library</span></button>
+  <button data-nav="food" class="bottom-btn"><span class="bottom-emoji">🍚</span><span>Food</span></button>
+  <button data-nav="ai" class="bottom-btn"><span class="bottom-emoji">🤖</span><span>Dwaekki</span></button>
+  <button data-nav="safety" class="bottom-btn"><span class="bottom-emoji">🛡️</span><span>Safety</span></button>
+</nav>
+
+<!-- ============ HOME / DASHBOARD ============ -->
+<main id="view-home" class="view active">
+  <section class="greet-card">
+    <img src="logo.png" alt="Dwaekki Gym logo" class="greet-logo" />
+    <h1>Hi <span id="userNameDisplay" class="accent">STAY</span> <span class="wave">👋</span></h1>
+    <p class="hero-sub" id="greetSub">Small movement counts. Dwaekki isn't keeping score against you.</p>
+  </section>
+
+  <section class="card missions-card">
+    <h3>🐷 Today's Dwaekki Missions</h3>
+    <p class="muted">Not all are workouts — a rest day still counts. No streak-shaming here.</p>
+    <div id="missionsList"></div>
+    <p id="missionsCount" class="muted" style="margin-top:8px;font-weight:700;"></p>
+  </section>
+
+  <section class="card mood-card">
+    <h3>Dwaekki's Mood</h3>
+    <div id="dwaekkiMood" class="mood-display"></div>
+  </section>
+
+  <section class="card foodbox-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3>🍱 Dwaekki's Food Box</h3>
+      <span style="font-size:1.8rem;">🐷</span>
+    </div>
+    <p id="foodBoxHistory" class="muted"></p>
+    <div id="foodShopGrid" class="food-shop-grid"></div>
+    <p id="foodBoxReaction" class="dwaekki-says"></p>
+  </section>
+
+  <section class="pill-grid">
+    <button class="pill-card" data-nav="workout"><span class="pill-emoji">⏱️</span>How much time do you have?</button>
+    <button class="pill-card" data-quick-eq="none"><span class="pill-emoji">🧍</span>I have nothing</button>
+    <button class="pill-card" data-quick-eq="some"><span class="pill-emoji">🏋️</span>I have equipment</button>
+    <button class="pill-card" data-quick-goal="gentle"><span class="pill-emoji">🛌</span>Low-Energy Day</button>
+    <button class="pill-card" data-nav="ai"><span class="pill-emoji">🤖</span>Ask Dwaekki</button>
+    <button class="pill-card" data-nav="food"><span class="pill-emoji">🍚</span>Build a meal</button>
+    <button class="pill-card" data-nav="progress"><span class="pill-emoji">📅</span>My Week</button>
+    <button class="pill-card" data-nav="arcade"><span class="pill-emoji">🎮</span>Dwaekki Play</button>
+    <button class="pill-card" data-nav="music"><span class="pill-emoji">🎧</span>Dwaekki Music</button>
+  </section>
+
+  <section class="hydration-card">
+    <h3>💧 Hydration Reminders</h3>
+    <p>Gentle nudges, no strict targets — everyone's needs vary.</p>
+    <label class="hydro-toggle"><input type="checkbox" id="hydrationToggle" /> Turn on gentle reminders (every 90 min while the app is open)</label>
+    <p id="hydrationNote" class="muted hidden">💧 Reminders are on — Dwaekki will nudge you gently.</p>
+  </section>
+</main>
+
+<!-- ============ WORKOUT HUB ============ -->
+<main id="view-workout" class="view">
+  <h2>🏋️ Home Workout Hub</h2>
+
+  <div class="step" id="step-equipment">
+    <h3>What do you have?</h3>
+    <div class="choice-row" id="equipmentChoice">
+      <button class="choice-pill" data-eq="none">🟢 Nothing</button>
+      <button class="choice-pill" data-eq="basic">🟡 Basic home stuff</button>
+      <button class="choice-pill" data-eq="some">🔵 Some equipment</button>
+      <button class="choice-pill" data-eq="full">🟣 Full home gym</button>
+    </div>
+    <div id="equipmentList" class="checkbox-row hidden">
+      <label><input type="checkbox" value="dumbbells" /> ☑ Dumbbells</label>
+      <label><input type="checkbox" value="bands" /> ☑ Resistance bands</label>
+      <label><input type="checkbox" value="mat" /> ☑ Yoga mat</label>
+      <label><input type="checkbox" value="kettlebell" /> ☑ Kettlebell</label>
+      <label><input type="checkbox" value="pullup" /> ☑ Pull-up bar</label>
+      <label><input type="checkbox" value="bike" /> ☑ Exercise bike</label>
+      <label><input type="checkbox" value="treadmill" /> ☑ Treadmill</label>
+      <label><input type="checkbox" value="skipping" /> ☑ Skipping rope</label>
+    </div>
+  </div>
+
+  <div class="step" id="step-goal">
+    <h3>What do you want to do?</h3>
+    <div class="choice-row" id="goalChoice">
+      <button class="choice-pill" data-goal="strength">💪 Strength</button>
+      <button class="choice-pill" data-goal="cardio">🫀 Cardio</button>
+      <button class="choice-pill" data-goal="mobility">🧘 Mobility</button>
+      <button class="choice-pill" data-goal="energy">⚡ Energy boost</button>
+      <button class="choice-pill" data-goal="general">🏃 General fitness</button>
+      <button class="choice-pill" data-goal="posture">🧍 Posture & movement</button>
+      <button class="choice-pill" data-goal="music">🎵 Music workout</button>
+      <button class="choice-pill" data-goal="beginner">🌱 Beginner</button>
+      <button class="choice-pill" data-goal="gentle">😴 Gentle / recovery</button>
+    </div>
+  </div>
+
+  <div class="step" id="step-accessibility">
+    <h3>Any adjustments? <span class="muted">(optional)</span></h3>
+    <div class="choice-row" id="accessChoice">
+      <button class="choice-pill toggle" data-acc="seated">🧑‍🦽 Seated versions</button>
+      <button class="choice-pill toggle" data-acc="lowimpact">🕊️ Low-impact</button>
+      <button class="choice-pill toggle" data-acc="nojump">🚫 No jumping</button>
+    </div>
+  </div>
+
+  <button id="generateWorkoutBtn" class="btn-primary big">Build My Workout 🐷</button>
+
+  <div id="workoutResult" class="workout-result hidden">
+    <h3 id="workoutTitle"></h3>
+    <ol id="workoutList" class="exercise-list"></ol>
+    <div class="workout-actions">
+      <button id="completeWorkoutBtn" class="btn-primary">✅ I did this!</button>
+      <button id="missedDayBtn" class="btn-ghost">🔄 I missed today</button>
+    </div>
+    <p id="dwaekkiSays" class="dwaekki-says"></p>
+
+    <div class="timer-box">
+      <h4>⏱️ Workout Timer</h4>
+      <div class="timer-display" id="timerDisplay">00:30</div>
+      <div class="timer-presets">
+        <button data-secs="30">30s</button>
+        <button data-secs="45">45s</button>
+        <button data-secs="60">1 min</button>
+        <button data-secs="120">2 min</button>
+      </div>
+      <div class="timer-controls">
+        <button id="timerStartBtn" class="btn-primary">▶️ Start</button>
+        <button id="timerPauseBtn" class="btn-ghost">⏸️ Pause</button>
+        <button id="timerResetBtn" class="btn-ghost">🔄 Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card safety-note">🛡️ Stop if something causes real pain. This is general movement guidance, not personal medical advice — see the <button class="linklike" data-nav="safety">Safety Center</button> for the full rules.</div>
+</main>
+
+<!-- ============ WORKOUT LIBRARY (full browse) ============ -->
+<main id="view-library" class="view">
+  <h2>📚 Workout Library</h2>
+  <p class="section-sub">Every move Dwaekki knows, all in one place. Filter by what you've got and what you're going for — no need to build a full workout first.</p>
+
+  <div class="step">
+    <h3>What do you have?</h3>
+    <div class="choice-row" id="libEquipmentChoice">
+      <button class="choice-pill selected" data-lib-eq="none">🟢 Nothing</button>
+      <button class="choice-pill" data-lib-eq="basic">🟡 Basic home stuff</button>
+      <button class="choice-pill" data-lib-eq="some">🔵 Some equipment</button>
+      <button class="choice-pill" data-lib-eq="full">🟣 Full home gym</button>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3>What kind of move?</h3>
+    <div class="choice-row" id="libGoalChoice">
+      <button class="choice-pill selected" data-lib-goal="strength">💪 Strength</button>
+      <button class="choice-pill" data-lib-goal="cardio">🫀 Cardio</button>
+      <button class="choice-pill" data-lib-goal="mobility">🧘 Mobility</button>
+      <button class="choice-pill" data-lib-goal="energy">⚡ Energy boost</button>
+      <button class="choice-pill" data-lib-goal="general">🏃 General fitness</button>
+      <button class="choice-pill" data-lib-goal="posture">🧍 Posture & movement</button>
+      <button class="choice-pill" data-lib-goal="music">🎵 Music workout</button>
+      <button class="choice-pill" data-lib-goal="beginner">🌱 Beginner</button>
+      <button class="choice-pill" data-lib-goal="gentle">😴 Gentle / recovery</button>
+    </div>
+  </div>
+
+  <div class="workout-result">
+    <h3 id="libraryListTitle">Strength · Nothing needed</h3>
+    <ol id="libraryList" class="exercise-list"></ol>
+  </div>
+
+  <div class="card safety-note">📚 Browsing only — nothing here logs a workout. Head to the <button class="linklike" data-nav="workout">Workout Hub</button> to build and complete a full session.</div>
+</main>
+
+<!-- ============ FOOD ============ -->
+<main id="view-food" class="view">
+  <h2>🍚 Food Section</h2>
+  <p class="section-sub">Balanced ≠ restrictive. Food here is about energy, growth and enjoyment — never a diet plan or calorie count.</p>
+
+  <div class="step">
+    <h3>Choose your eating style</h3>
+    <div class="choice-row" id="dietChoice">
+      <button class="choice-pill" data-diet="veg">🌱 Veg</button>
+      <button class="choice-pill" data-diet="eggitarian">🥚 Eggitarian</button>
+      <button class="choice-pill" data-diet="nonveg">🍗 Non-Veg</button>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3>Choose your region</h3>
+    <div class="choice-row" id="regionChoice">
+      <button class="choice-pill" data-region="indian">🇮🇳 Indian</button>
+      <button class="choice-pill" data-region="korean">🇰🇷 Korean</button>
+      <button class="choice-pill" data-region="japanese">🇯🇵 Japanese</button>
+      <button class="choice-pill" data-region="filipino">🇵🇭 Filipino</button>
+      <button class="choice-pill" data-region="thai">🇹🇭 Thai</button>
+      <button class="choice-pill" data-region="indonesian">🇮🇩 Indonesian</button>
+      <button class="choice-pill" data-region="american">🇺🇸 American</button>
+      <button class="choice-pill" data-region="european">🇪🇺 European</button>
+      <button class="choice-pill" data-region="other">🌎 Other / Mixed</button>
+    </div>
+  </div>
+
+  <label class="budget-toggle"><input type="checkbox" id="budgetToggle" /> 💸 Budget-friendly only</label>
+
+  <button id="showMealsBtn" class="btn-primary big">Show Me Meals 🍽️</button>
+  <div id="mealResults" class="meal-grid"></div>
+
+  <hr class="divider"/>
+
+  <h3>🍱 Build My Plate</h3>
+  <p class="section-sub">No calorie counting. Just pick what sounds good.</p>
+  <div class="plate-builder">
+    <div class="plate-col">
+      <h4>Pick a carb</h4>
+      <div class="choice-row" data-plate="carb">
+        <button class="choice-pill">🍚 Rice</button><button class="choice-pill">🥔 Potato</button>
+        <button class="choice-pill">🍞 Bread</button><button class="choice-pill">🌽 Corn</button>
+        <button class="choice-pill">🍜 Noodles</button><button class="choice-pill">🥣 Oats</button>
+      </div>
+    </div>
+    <div class="plate-col">
+      <h4>Pick a protein</h4>
+      <div class="choice-row" data-plate="protein">
+        <button class="choice-pill">🌱 Dal</button><button class="choice-pill">🫘 Beans</button>
+        <button class="choice-pill">🥛 Yogurt</button><button class="choice-pill">🧀 Paneer/Tofu</button>
+        <button class="choice-pill">🥚 Eggs</button><button class="choice-pill">🐟 Fish</button>
+        <button class="choice-pill">🍗 Chicken</button>
+      </div>
+    </div>
+    <div class="plate-col">
+      <h4>Add colour</h4>
+      <div class="choice-row" data-plate="color">
+        <button class="choice-pill">🥕 Carrot</button><button class="choice-pill">🥦 Broccoli</button>
+        <button class="choice-pill">🥬 Greens</button><button class="choice-pill">🍅 Tomato</button>
+        <button class="choice-pill">🥒 Cucumber</button><button class="choice-pill">🍎 Fruit</button>
+      </div>
+    </div>
+    <div class="plate-col">
+      <h4>Add something you enjoy</h4>
+      <div class="choice-row" data-plate="joy">
+        <button class="choice-pill">🍫 Chocolate</button><button class="choice-pill">🍪 Biscuit</button>
+        <button class="choice-pill">🍦 Ice cream</button><button class="choice-pill">🍕 Pizza</button>
+      </div>
+    </div>
+  </div>
+  <div id="plateResult" class="plate-result hidden"></div>
+
+  <hr class="divider"/>
+  <h3>🥕 What can I make with what I have?</h3>
+  <div class="pantry-row">
+    <input id="pantryInput" type="text" placeholder="e.g. rice, eggs, tomatoes" />
+    <button id="pantryBtn" class="btn-primary">Ask Dwaekki</button>
+  </div>
+  <div id="pantryResult" class="dwaekki-says"></div>
+</main>
+
+<!-- ============ ASK DWAEKKI (AI) ============ -->
+<main id="view-ai" class="view">
+  <h2><img src="icon-inside.png" alt="" class="ai-avatar-icon" /> Ask Dwaekki</h2>
+  <p class="section-sub">Dwaekki is a small wellness helper — not a doctor, not a dietitian. For pain, injury, or eating/medical concerns, Dwaekki will always point you to a real qualified professional.</p>
+  <p class="ai-mode-note" id="aiModeNote">🐷 Checking connection…</p>
+
+  <div class="chat-window" id="chatWindow"></div>
+
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button>I only have 10 minutes today. What can I do?</button>
+    <button>I have dumbbells and a resistance band.</button>
+    <button>What can I substitute for this exercise?</button>
+    <button>I don't have eggs. What can I use instead?</button>
+    <button>What can I make with rice, dal and vegetables?</button>
+    <button>I'm travelling and don't have equipment.</button>
+    <button>Can you make my workout shorter?</button>
+    <button>I missed yesterday. What should I do today?</button>
+  </div>
+
+  <form id="chatForm" class="chat-form">
+    <input id="chatInput" type="text" placeholder="Ask Dwaekki anything about workouts or food..." autocomplete="off" />
+    <button type="submit" class="btn-primary">Send</button>
+  </form>
+</main>
+
+<!-- ============ ARCADE ============ -->
+<main id="view-arcade" class="view">
+  <h2>🎮 Dwaekki Arcade</h2>
+  <p class="section-sub">Pick any game. No pressure, no losing streaks — just cozy little breaks.</p>
+  <div class="arcade-grid" id="arcadeGrid"></div>
+  <div id="gameStage" class="game-stage hidden">
+    <div class="game-stage-header">
+      <h3 id="gameStageTitle"></h3>
+      <button id="closeGameBtn" class="btn-ghost">✕ Close</button>
+    </div>
+    <div id="gameStageBody"></div>
+  </div>
+</main>
+
+<!-- ============ MUSIC ============ -->
+<main id="view-music" class="view">
+  <h2>🎧 Dwaekki Music</h2>
+  <p class="section-sub">Bring your own workout playlist — paste any YouTube link (a song, mix, or playlist) and it'll play right here while you move.</p>
+
+  <div class="card music-card">
+    <div class="pantry-row">
+      <input id="musicInput" type="text" placeholder="Paste a YouTube link…" autocomplete="off" />
+      <button id="musicPlayBtn" class="btn-primary">Play</button>
+    </div>
+    <div id="musicEmbedWrap" class="music-embed-wrap hidden">
+      <iframe id="musicEmbed" src="" title="Dwaekki Music player" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <p id="musicNote" class="muted"></p>
+  </div>
+
+  <h3>💡 Quick picks (STAY-approved moods)</h3>
+  <div class="choice-row">
+    <button class="choice-pill music-suggest" data-q="lofi study beats">🎵 Lo-fi focus</button>
+    <button class="choice-pill music-suggest" data-q="kpop workout playlist">💃 K-pop workout mix</button>
+    <button class="choice-pill music-suggest" data-q="stray kids upbeat songs">🐺 Stray Kids energy</button>
+    <button class="choice-pill music-suggest" data-q="calm stretching music">🧘 Calm stretch music</button>
+  </div>
+  <p class="muted">Quick picks open a YouTube search in a new tab — pick whatever fits your mood, then paste the link above to play it here.</p>
+</main>
+
+<!-- ============ PROGRESS ============ -->
+<main id="view-progress" class="view">
+  <h2>💪 My Progress</h2>
+  <div class="progress-grid">
+    <div class="stat-card"><span id="statWorkouts">0</span><label>🏋️ Workouts completed</label></div>
+    <div class="stat-card"><span id="statMinutes">0</span><label>⏱️ Active minutes</label></div>
+    <div class="stat-card"><span id="statStreak">0</span><label>🔥 Current consistency</label></div>
+    <div class="stat-card"><span id="statMobility">0</span><label>🧘 Mobility sessions</label></div>
+    <div class="stat-card"><span id="statMeals">0</span><label>🥗 Meals explored</label></div>
+    <div class="stat-card"><span id="statRest">0</span><label>💗 Rest days respected</label></div>
+  </div>
+
+  <div class="level-card">
+    <h3 id="levelLabel2">Level 1 · Baby Dwaekki</h3>
+    <div class="bar"><div id="levelBar2" class="bar-fill"></div></div>
+  </div>
+
+  <div class="dash-card">
+    <h3>📅 My Week</h3>
+    <div id="weekStrip" class="week-strip"></div>
+  </div>
+
+  <h3>🏆 Achievements</h3>
+  <div class="achieve-grid" id="achieveGrid"></div>
+
+  <h3>🎨 Wallpaper Shop</h3>
+  <p class="section-sub">Spend your 🪙 Dwaekki Coins on a new background for the whole app.</p>
+  <div class="wallpaper-grid" id="wallpaperGrid"></div>
+</main>
+
+<!-- ============ SCHOOL ============ -->
+<main id="view-school" class="view">
+  <h2>📚 Dwaekki School</h2>
+  <p class="section-sub">Bite-sized answers to "why" — the science behind moving and eating well.</p>
+  <div class="accordion" id="schoolAccordion"></div>
+</main>
+
+<!-- ============ SAFETY ============ -->
+<main id="view-safety" class="view">
+  <h2>🛡️ Safety Center</h2>
+  <div class="card">
+    <ul class="safety-list">
+      <li>Stop if something causes significant or sharp pain.</li>
+      <li>Never exercise through an injury — rest and recover first.</li>
+      <li>Warm up before, cool down after.</li>
+      <li>Use any equipment the way it's meant to be used.</li>
+      <li>Keep clear space around you before you start moving.</li>
+      <li>Don't copy advanced moves just because they look cool online.</li>
+      <li>Ask a qualified adult, doctor, or physiotherapist if something feels off.</li>
+    </ul>
+  </div>
+  <div class="card highlight">
+    This site is built to be <strong>anti-extreme-diet</strong> and <strong>anti-body-shaming</strong>. There is no weight tracker, no calorie counter, and no "before/after" culture here — progress is measured in movement, consistency, and how you feel. 💗
+  </div>
+  <div class="card">
+    Dwaekki is a fitness helper, not a medical professional. For pain, injury, fainting, breathing problems, disordered eating, or any medical concern — please talk to a parent/guardian, doctor, physiotherapist, or other qualified professional.
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>🐰🐷 Dwaekki Gym created by Tulika Soni ♡ × STAY Project</p>
+  <p>Copyright © — Original fan-made project. Not affiliated with JYP Entertainment.</p>
+  <p class="footer-love">Stray Kids everywhere all around the world, you make Stray Kids Stay</p>
+  <p class="version-tag" id="versionTag">Dwaekki Gym v1.0.0</p>
+</footer>
+
+<!-- ============ UPDATE TOAST ============ -->
+<div id="updateToast" class="update-toast hidden">
+  <p>🐷 A new Dwaekki update is ready!</p>
+  <p class="update-sub">We've added some new things for you. ✨</p>
+  <div class="update-actions">
+    <button id="updateNowBtn" class="btn-primary">Update now</button>
+    <button id="updateLaterBtn" class="btn-ghost">Later</button>
+  </div>
 </div>
-
-<div id="hydrationToast" class="toast hidden"></div>
-
-<div id="updateBanner" class="update-banner hidden">
-  <span data-en="🐷 A new Dwaekki update is ready! We've added some new things for you. ✨" data-hi="🐷 Ek naya Dwaekki update taiyar hai! Kuch naya add kiya hai tumhare liye. ✨">🐷 A new Dwaekki update is ready! We've added some new things for you. ✨</span>
-  <button id="updateNowBtn" data-en="Update now" data-hi="Ab update karo">Update now</button>
-</div>
-
-<!-- Google Website Translator — free, no key, ~100+ languages.
-     Purely optional: if it fails to load (no internet, blocked), the app
-     still works fine in English/Hindi via the built-in toggle. -->
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-      { pageLanguage: "en", autoDisplay: false, layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
-      "google_translate_element"
-    );
-  }
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-<!-- Puter.js — lets Ask Dwaekki call a real AI model, for free, with no API
-     key. Runs entirely client-side. If it can't load or the person is
-     offline, Ask Dwaekki quietly falls back to its own built-in brain. -->
-<script src="https://js.puter.com/v2/"></script>
 
 <script src="data.js"></script>
+<script src="ai.js"></script>
+<script src="games.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
