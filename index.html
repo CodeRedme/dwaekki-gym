@@ -223,6 +223,8 @@
       <p id="timerPreSummary" class="muted" style="font-size:.95rem;"></p>
       <div class="switch-row"><span>🔊 Sound</span><input type="checkbox" id="timerSoundToggle" checked /></div>
       <div class="switch-row"><span>📳 Vibration</span><input type="checkbox" id="timerVibrationToggle" checked /></div>
+      <div class="switch-row"><span>🔆 Keep screen awake</span><input type="checkbox" id="timerWakeToggle" checked /></div>
+      <p class="muted" style="font-size:.75rem; margin:6px 0 0;">Phones pause timers when the screen locks — keeping this on is the surest way to have the countdown stay perfectly accurate start to finish.</p>
       <button id="timerBeginBtn" class="btn-primary big" style="margin-top:14px;">▶ Start Workout</button>
     </div>
   </div>
@@ -407,27 +409,10 @@
 <!-- ============ MUSIC ============ -->
 <main id="view-music" class="view">
   <h2>🎧 Dwaekki Music</h2>
-  <p class="section-sub">Connect your own music platform, or just paste a YouTube link — either way, keep the beat going while you move.</p>
+  <p class="section-sub">Sign in with your YouTube account, or just paste a YouTube link — either way, keep the beat going while you move.</p>
 
   <div class="card music-connect-card">
     <h3>🔗 Connect your music</h3>
-    <p class="muted" id="spotifyStatus">Not connected</p>
-    <div class="connect-row">
-      <button id="spotifyLoginBtn" class="platform-btn spotify-btn">🟢 Sign in with Spotify</button>
-      <button id="spotifyLogoutBtn" class="platform-btn hidden">Disconnect Spotify</button>
-    </div>
-
-    <div id="spotifySearchWrap" class="hidden">
-      <form id="spotifySearchForm" class="pantry-row" style="margin-top:14px;">
-        <input id="spotifySearchInput" type="text" placeholder="Search a song or artist on Spotify…" autocomplete="off" />
-        <button type="submit" class="btn-primary">Search</button>
-      </form>
-      <div id="spotifyResults" class="spotify-results"></div>
-      <p class="muted" style="margin-top:8px;">Previews are 30 seconds where Spotify provides one — tap "Open in Spotify" for the full track.</p>
-    </div>
-
-    <hr class="divider" />
-
     <p class="muted" id="youtubeStatus">Not connected</p>
     <div class="connect-row">
       <button id="youtubeLoginBtn" class="platform-btn youtube-btn">▶️ Sign in with YouTube</button>
@@ -440,12 +425,13 @@
   </div>
 
   <div class="card music-connect-card">
-    <h3>🎵 No Spotify or YouTube? Find it on your platform</h3>
+    <h3>🎵 Find it on your platform</h3>
     <p class="muted">Type a song or artist, then tap wherever you already listen — it opens their search, already logged into your account in your browser.</p>
     <form id="platformSearchForm" class="pantry-row" style="margin-top:10px;">
       <input id="platformSearchInput" type="text" placeholder="Search a song or artist…" autocomplete="off" />
     </form>
     <div class="connect-row" style="margin-top:10px;">
+      <button class="platform-btn platform-pick" data-platform="spotify">🟢 Spotify</button>
       <button class="platform-btn platform-pick" data-platform="apple">🍎 Apple Music</button>
       <button class="platform-btn platform-pick" data-platform="ytmusic">▶️ YouTube Music</button>
       <button class="platform-btn platform-pick" data-platform="amazon">🎧 Amazon Music</button>
@@ -458,6 +444,7 @@
 
   <div class="card music-card">
     <h3>Or paste a link</h3>
+    <label class="switch-row" style="border:none; padding:4px 0 10px;"><span>🔆 Keep screen awake while playing</span><input type="checkbox" id="musicWakeToggle" /></label>
     <div class="pantry-row">
       <input id="musicInput" type="text" placeholder="Paste a YouTube link…" autocomplete="off" />
       <button id="musicPlayBtn" class="btn-primary">Play</button>
@@ -564,7 +551,6 @@
 <script src="data.js"></script>
 <script src="ai.js"></script>
 <script src="games.js"></script>
-<script src="spotify.js"></script>
 <script src="youtube-connect.js"></script>
 <script src="app.js"></script>
 </body>

@@ -132,6 +132,9 @@ function renderSpotifyResults(tracks){
     `;
     list.appendChild(row);
   });
+  list.querySelectorAll("audio").forEach(a=>{
+    a.addEventListener("play", ()=>{ if(typeof maybeKeepScreenAwakeForMusic === "function") maybeKeepScreenAwakeForMusic(); });
+  });
 }
 
 async function updateSpotifyUI(){

@@ -37,6 +37,7 @@ function goTo(view){
   document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.nav===view));
   document.querySelectorAll(".bottom-btn").forEach(b=>b.classList.toggle("active", b.dataset.nav===view));
   document.querySelectorAll(".desktop-bottom-btn").forEach(b=>b.classList.toggle("active", b.dataset.nav===view));
+  if(view !== "music" && view !== "timer" && typeof releaseWakeLock === "function") releaseWakeLock();
   window.scrollTo({top:0, behavior:"smooth"});
 }
 document.querySelectorAll("[data-nav]").forEach(btn=>{
@@ -497,14 +498,42 @@ window.onGamePlayed = function(id, coins){
 };
 window.onGameWon = function(id){ /* reserved for future celebratory hooks */ };
 
+/* ---------- Screen Wake Lock (keeps timer/music accurate with the screen on) ---------- */
+let wakeLock = null;
+let wakeLockWanted = false;
+async function requestWakeLock(){
+  if(!wakeLockWanted || !("wakeLock" in navigator)) return;
+  try{
+    wakeLock = await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release", ()=>{ wakeLock = null; });
+  }catch(e){ /* not supported, or user denied — fail silently, timer still self-corrects */ }
+}
+function releaseWakeLock(){
+  wakeLockWanted = false;
+  if(wakeLock){ wakeLock.release(); wakeLock = null; }
+}
+function enableWakeLock(){
+  wakeLockWanted = true;
+  requestWakeLock();
+}
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState === "visible" && wakeLockWanted) requestWakeLock();
+});
+
 /* ---------- Guided Workout Timer (pre → active → done) ---------- */
 const WORK_SECONDS = 40, REST_SECONDS = 15;
-let gtQueue = [], gtIndex = 0, gtPhase = "work", gtRemaining = WORK_SECONDS, gtInterval = null, gtPaused = false;
+let gtQueue = [], gtIndex = 0, gtPhase = "work", gtInterval = null, gtPaused = false;
+let gtPhaseEndsAt = 0, gtRemainingAtPause = WORK_SECONDS;
 let audioCtx = null;
 
 function formatTime(s){
+  s = Math.max(0, s);
   const m = Math.floor(s/60), sec = s%60;
   return `${String(m).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+function gtCurrentRemaining(){
+  if(gtPaused) return gtRemainingAtPause;
+  return Math.round((gtPhaseEndsAt - Date.now()) / 1000);
 }
 function gtBeep(){
   if(!document.getElementById("timerSoundToggle").checked) return;
@@ -538,14 +567,15 @@ function openGuidedTimer(){
 document.getElementById("startGuidedTimerBtn").addEventListener("click", openGuidedTimer);
 
 function gtRenderActive(){
+  const remaining = gtCurrentRemaining();
   const step = gtQueue[gtIndex];
   document.getElementById("timerStepLabel").textContent = gtPhase === "work"
     ? `Move ${gtIndex+1} of ${gtQueue.length}`
     : "Rest";
   document.getElementById("timerExerciseName").textContent = gtPhase === "work" ? step : "Catch your breath 💗";
-  document.getElementById("timerCountdown").textContent = formatTime(gtRemaining);
+  document.getElementById("timerCountdown").textContent = formatTime(remaining);
   const total = gtPhase === "work" ? WORK_SECONDS : REST_SECONDS;
-  document.getElementById("timerProgressFill").style.width = `${100 - (gtRemaining/total)*100}%`;
+  document.getElementById("timerProgressFill").style.width = `${100 - (Math.max(0,remaining)/total)*100}%`;
   const next = gtQueue[gtIndex+1];
   document.getElementById("timerNextLabel").textContent = gtPhase === "work"
     ? (next ? `Up next: ${next}` : "Last move — then a well-earned rest!")
@@ -553,53 +583,68 @@ function gtRenderActive(){
   document.getElementById("timerRestMsg").classList.toggle("hidden", gtPhase !== "rest");
 }
 
+function gtStartPhase(phase, seconds){
+  gtPhase = phase;
+  gtPhaseEndsAt = Date.now() + seconds*1000;
+  gtRemainingAtPause = seconds;
+}
+
 function gtTick(){
   if(gtPaused) return;
-  gtRemaining--;
-  if(gtRemaining <= 0){
+  const remaining = gtCurrentRemaining();
+  if(remaining <= 0){
     gtBeep(); gtVibrate([150]);
     if(gtPhase === "work"){
       if(gtIndex >= gtQueue.length - 1){
         gtFinish();
         return;
       }
-      gtPhase = "rest";
-      gtRemaining = REST_SECONDS;
+      gtStartPhase("rest", REST_SECONDS);
     } else {
       gtIndex++;
-      gtPhase = "work";
-      gtRemaining = WORK_SECONDS;
+      gtStartPhase("work", WORK_SECONDS);
     }
   }
   gtRenderActive();
 }
 
 function gtStart(){
-  gtIndex = 0; gtPhase = "work"; gtRemaining = WORK_SECONDS; gtPaused = false;
+  gtIndex = 0; gtPaused = false;
+  gtStartPhase("work", WORK_SECONDS);
   document.getElementById("timerPreScreen").classList.add("hidden");
   document.getElementById("timerActiveScreen").classList.remove("hidden");
   gtRenderActive();
   clearInterval(gtInterval);
   gtInterval = setInterval(gtTick, 1000);
+  if(document.getElementById("timerWakeToggle").checked) enableWakeLock();
 }
 document.getElementById("timerBeginBtn").addEventListener("click", gtStart);
 
 document.getElementById("timerPauseBtn").addEventListener("click", (e)=>{
-  gtPaused = !gtPaused;
-  e.target.textContent = gtPaused ? "▶️" : "⏸️";
+  if(!gtPaused){
+    gtRemainingAtPause = gtCurrentRemaining();
+    gtPaused = true;
+    e.target.textContent = "▶️";
+  } else {
+    gtStartPhase(gtPhase, gtRemainingAtPause);
+    gtPaused = false;
+    e.target.textContent = "⏸️";
+  }
 });
 document.getElementById("timerSkipBtn").addEventListener("click", ()=>{
-  gtRemaining = 1;
-  if(!gtPaused) gtTick();
+  gtStartPhase(gtPhase, 1);
+  if(!gtPaused) gtTick(); else { gtPaused = false; gtTick(); gtPaused = true; }
 });
 document.getElementById("timerRestartBtn").addEventListener("click", ()=>{
-  gtIndex = 0; gtPhase = "work"; gtRemaining = WORK_SECONDS; gtPaused = false;
+  gtIndex = 0; gtPaused = false;
+  gtStartPhase("work", WORK_SECONDS);
   document.getElementById("timerPauseBtn").textContent = "⏸️";
   gtRenderActive();
 });
 
 function gtFinish(){
   clearInterval(gtInterval); gtInterval = null;
+  releaseWakeLock();
   document.getElementById("timerActiveScreen").classList.add("hidden");
   document.getElementById("timerDoneScreen").classList.remove("hidden");
   gtVibrate([120,80,120,80,200]);
@@ -609,7 +654,8 @@ document.getElementById("timerFeedBtn").addEventListener("click", ()=>{
   document.getElementById("timerFeedBtn").disabled = true;
   document.getElementById("timerFeedBtn").textContent = "🐰 Fed Dwaekki!";
 });
-document.getElementById("timerBackHomeBtn").addEventListener("click", ()=> goTo("home"));
+document.getElementById("timerBackHomeBtn").addEventListener("click", ()=> { releaseWakeLock(); goTo("home"); });
+
 
 /* ---------- "How much time do you have?" quick picker ---------- */
 document.querySelectorAll(".time-chip").forEach(chip=>{
@@ -632,6 +678,15 @@ document.querySelectorAll(".time-chip").forEach(chip=>{
 });
 
 /* ---------- Dwaekki Music ---------- */
+const musicWakeToggle = document.getElementById("musicWakeToggle");
+if(musicWakeToggle){
+  musicWakeToggle.addEventListener("change", ()=>{
+    if(musicWakeToggle.checked) enableWakeLock(); else releaseWakeLock();
+  });
+}
+function maybeKeepScreenAwakeForMusic(){
+  if(musicWakeToggle && musicWakeToggle.checked) enableWakeLock();
+}
 function youtubeIdFromUrl(url){
   try{
     const u = new URL(url);
@@ -648,6 +703,7 @@ function playYoutubeVideoId(videoId, note){
   wrap.classList.remove("hidden");
   document.getElementById("musicNote").textContent = note || "🎧 Playing! Head back to Workout to keep the vibe going.";
   wrap.scrollIntoView({behavior:"smooth", block:"center"});
+  maybeKeepScreenAwakeForMusic();
 }
 document.getElementById("musicPlayBtn").addEventListener("click", ()=>{
   const val = document.getElementById("musicInput").value.trim();
@@ -671,6 +727,7 @@ document.getElementById("musicPlayBtn").addEventListener("click", ()=>{
   frame.src = embedSrc;
   wrap.classList.remove("hidden");
   note.textContent = "🎧 Playing! Head back to Workout to keep the vibe going.";
+  maybeKeepScreenAwakeForMusic();
 });
 document.querySelectorAll(".music-suggest").forEach(btn=>{
   btn.addEventListener("click", ()=>{
@@ -773,6 +830,7 @@ if(clearDataBtn){
 
 /* ---------- Find it on your platform (search deep-links, no login needed) ---------- */
 const PLATFORM_SEARCH_URLS = {
+  spotify: q => `https://open.spotify.com/search/${encodeURIComponent(q)}`,
   apple: q => `https://music.apple.com/us/search?term=${encodeURIComponent(q)}`,
   ytmusic: q => `https://music.youtube.com/search?q=${encodeURIComponent(q)}`,
   amazon: q => `https://music.amazon.com/search/${encodeURIComponent(q)}`,
