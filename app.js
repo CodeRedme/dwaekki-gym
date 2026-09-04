@@ -830,7 +830,6 @@ if(clearDataBtn){
 
 /* ---------- Find it on your platform (search deep-links, no login needed) ---------- */
 const PLATFORM_SEARCH_URLS = {
-  spotify: q => `https://open.spotify.com/search/${encodeURIComponent(q)}`,
   apple: q => `https://music.apple.com/us/search?term=${encodeURIComponent(q)}`,
   ytmusic: q => `https://music.youtube.com/search?q=${encodeURIComponent(q)}`,
   amazon: q => `https://music.amazon.com/search/${encodeURIComponent(q)}`,

@@ -6,12 +6,12 @@
    3. Enable the "YouTube Data API v3" for that project (APIs & Services → Library)
    4. Paste the Client ID below
    Until a Client ID is added, the button will politely say it's not connected yet — everything else
-   in Dwaekki Music (Spotify, platform picker, paste-a-link) keeps working as normal.
+   in Dwaekki Music (platform picker, paste-a-link) keeps working as normal.
    Note: the sign-in token Google gives a plain frontend like this lasts about an hour — that's a
    Google limit, not a bug. Just tap "Sign in with YouTube" again if it logs out.
 =================================================================================================================== */
 
-const GOOGLE_CLIENT_ID = ""; // <-- put your Google OAuth Client ID here
+const GOOGLE_CLIENT_ID = "96852406307-a0loeq0p03bmvs7boitop57f34cs8uoh.apps.googleusercontent.com";
 const GOOGLE_SCOPES = "https://www.googleapis.com/auth/youtube.readonly";
 const YT_TOKEN_KEY = "dwaekkiYoutubeToken";
 
@@ -91,12 +91,12 @@ function renderYoutubeVideoList(items){
     if(!videoId) return;
     const thumb = sn.thumbnails && (sn.thumbnails.default || sn.thumbnails.medium);
     const row = document.createElement("button");
-    row.className = "spotify-track-row youtube-track-row";
+    row.className = "track-row youtube-track-row";
     row.innerHTML = `
-      ${thumb ? `<img src="${thumb.url}" alt="" class="spotify-track-art" />` : ""}
-      <div class="spotify-track-info">
-        <div class="spotify-track-name">${sn.title}</div>
-        <div class="spotify-track-artist muted">${sn.videoOwnerChannelTitle || sn.channelTitle || ""}</div>
+      ${thumb ? `<img src="${thumb.url}" alt="" class="track-art" />` : ""}
+      <div class="track-info">
+        <div class="track-name">${sn.title}</div>
+        <div class="track-artist muted">${sn.videoOwnerChannelTitle || sn.channelTitle || ""}</div>
       </div>
     `;
     row.addEventListener("click", ()=>{
