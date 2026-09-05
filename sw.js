@@ -1,3 +1,5 @@
+// v1.10.0 — bump this comment every release so the browser always sees a byte-different
+// sw.js file and knows to check for an update (importScripts alone isn't always enough).
 // Pull in APP_VERSION from data.js so there's one single source of truth for the version number.
 importScripts("./data.js");
 
