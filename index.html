@@ -13,7 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
 <script src="https://js.puter.com/v2/"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -409,20 +408,7 @@
 <!-- ============ MUSIC ============ -->
 <main id="view-music" class="view">
   <h2>🎧 Dwaekki Music</h2>
-  <p class="section-sub">Sign in with your YouTube account, or just paste a YouTube link — either way, keep the beat going while you move.</p>
-
-  <div class="card music-connect-card">
-    <h3>🔗 Connect your music</h3>
-    <p class="muted" id="youtubeStatus">Not connected</p>
-    <div class="connect-row">
-      <button id="youtubeLoginBtn" class="platform-btn youtube-btn">▶️ Sign in with YouTube</button>
-      <button id="youtubeLogoutBtn" class="platform-btn hidden">Disconnect YouTube</button>
-    </div>
-    <div id="youtubeBrowseWrap" class="hidden">
-      <select id="youtubePlaylistSelect" style="margin-top:12px;"></select>
-      <div id="youtubeResults" class="track-results" style="margin-top:10px;"></div>
-    </div>
-  </div>
+  <p class="section-sub">Paste a YouTube link, or tap wherever you already listen — either way, keep the beat going while you move.</p>
 
   <div class="card music-connect-card">
     <h3>🎵 Find it on your platform</h3>
@@ -550,7 +536,6 @@
 <script src="data.js"></script>
 <script src="ai.js"></script>
 <script src="games.js"></script>
-<script src="youtube-connect.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
