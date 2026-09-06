@@ -1,6 +1,6 @@
 /* ===================== DWAEKKI GYM — DATA ===================== */
 
-const APP_VERSION = "1.11.0";
+const APP_VERSION = "1.11.2";
 
 const EXERCISES = {
   none: {
@@ -319,12 +319,12 @@ const DWAEKKI_REACTIONS = [
 
 const WALLPAPERS = [
   {id:"default",  name:"Bunny & Roses (default)", cost:0,  file:"bg-pattern.png"},
-  {id:"heart",    name:"Soft Heart Glow",   cost:200, file:"wallpaper-heart.jpg"},
-  {id:"teddy",    name:"Dream Land Teddies",cost:280, file:"wallpaper-teddy.jpg"},
-  {id:"chick",    name:"Sunny Chick Gingham",cost:360, file:"wallpaper-chick.jpg"},
-  {id:"straykids",name:"STAY Gingham Cat",  cost:440, file:"wallpaper-straykids.jpg"},
-  {id:"bunnylilac",name:"Sassy Lilac Bunnies",cost:520, file:"wallpaper-bunnylilac.jpg"},
-  {id:"bunnypink",name:"Pink Bunny Pile",   cost:600, file:"wallpaper-bunnypink.jpg"}
+  {id:"heart",    name:"Soft Heart Glow",   cost:40, file:"wallpaper-heart.jpg"},
+  {id:"teddy",    name:"Dream Land Teddies",cost:60, file:"wallpaper-teddy.jpg"},
+  {id:"chick",    name:"Sunny Chick Gingham",cost:60, file:"wallpaper-chick.jpg"},
+  {id:"straykids",name:"STAY Gingham Cat",  cost:40, file:"wallpaper-straykids.jpg"},
+  {id:"bunnylilac",name:"Sassy Lilac Bunnies",cost:60, file:"wallpaper-bunnylilac.jpg"},
+  {id:"bunnypink",name:"Pink Bunny Pile",   cost:40, file:"wallpaper-bunnypink.jpg"}
 ];
 
 const NUMBER_PUZZLES = [
